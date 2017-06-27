@@ -84,6 +84,8 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
     }
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
         print(1)
+        
+        
         // Get the first object from the metadataObjects array.
         if let barcodeData = metadataObjects.first {
             // Turn it into machine readable code
@@ -97,47 +99,37 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             
             // Avoid a very buzzy device.
+            removeOutPut()
             session.stopRunning()
+            
+        
         }
+    }
+    
+    func removeOutPut() {
+        let sessionOutput = session.outputs
+        print(sessionOutput)
+        //session.removeOutput(sessionOutput)
     }
     
     func barcodeDetected(_ code: String) {
-        // Let the user know we've found something.
-        //let alert = UIAlertController(title: "Found a Barcode!", message: code, preferredStyle: UIAlertControllerStyle.alert)
-        //alert.addAction(UIAlertAction(title: "Search", style: UIAlertActionStyle.destructive, handler: { action in
-        
-        // Remove the spaces.
-        //let trimmedCode = code.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-        let trimmedCode = Int(code.trimmingCharacters(in: NSCharacterSet.whitespaces))
-        // EAN or UPC?
-        // Check for added "0" at beginning of code.
-        
-        let trimmedCodeString = "\(trimmedCode)"
-        var trimmedCodeNoZero: String
-        
-        if trimmedCodeString.hasPrefix("0") && trimmedCodeString.characters.count > 1 {
-            trimmedCodeNoZero = String(trimmedCodeString.characters.dropFirst())
-            // Send the doctored UPC to DataService.searchAPI()
-            //DataService.searchAPI(trimmedCodeNoZero)
-            print(trimmedCodeNoZero)
-        } else {
-            print(trimmedCodeString)
-            //UdacityClient.sharedInstance.getSessionID(username, password) { (succes, error) in
-            GoogleBooksClient.sharedInstance.getBookInformationFromBarcode(trimmedCode!, CHForBookInformation: { (succes, data) in
-                print(2222)
-            })
-            
-            // Send the doctored EAN to DataService.searchAPI()
-            //DataService.searchAPI(trimmedCodeString)
+    
+        guard let trimmedCode = Int(code.trimmingCharacters(in: NSCharacterSet.whitespaces)) else {
+            print("Trimming of scanned code failed")
+            return
         }
         
-        print("Scan succesfull")
-        print("---------------")
-        //}))
+        
+        print(trimmedCode)
+        GoogleBooksClient.sharedInstance.getBookInformationFromBarcode(trimmedCode) { (succes, data) in
+            
+        
+        }
+        
         
     }
     
-    
+
     
     func scanningNotPossible() {
         // Let the user know that scanning isn't possible with the current device.

@@ -12,7 +12,7 @@ import Firebase
 import GoogleSignIn
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {//, GIDSignInDelegate {
     
     var window: UIWindow?
     
@@ -24,33 +24,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         FirebaseApp.configure()
         
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
-        GIDSignIn.sharedInstance().delegate = self
+//        GIDSignIn.sharedInstance().delegate = self
         
         return true
     }
     
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        if error != nil {
-            print("Failed to log into Google", error)
-            return
-        }
-        
-        print("Succesfully signed into Google", user)
-        
-        guard let idToken = user.authentication.idToken else { print("Couldn't get idToken from user"); return }
-        guard let accessToken = user.authentication.accessToken else { print("Couldn't get 'accessToken' from user"); return }
-        
-        let credentials = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
-        Auth.auth().signIn(with: credentials) { (user, error) in
-            
-            if error != nil {
-                print("Failed to sign in to Firebase with Google")
-                return
-            }
-            
-            print("Successfully logged into Firebase with Google", user!.uid)
-        }
-    }
+//    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+//        if error != nil {
+//            print("Failed to log into Google", error)
+//            return
+//        }
+//        
+//        print("Succesfully signed into Google", user)
+//        
+//        guard let idToken = user.authentication.idToken else { print("Couldn't get idToken from user"); return }
+//        guard let accessToken = user.authentication.accessToken else { print("Couldn't get 'accessToken' from user"); return }
+//        
+//        let credentials = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+//        Auth.auth().signIn(with: credentials) { (user, error) in
+//            
+//            if error != nil {
+//                print("Failed to sign in to Firebase with Google")
+//                return
+//            }
+//            
+//            print("Successfully logged into Firebase with Google", user!.uid)
+//            
+//        }
+//    }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         let handled = FBSDKApplicationDelegate.sharedInstance().application(app, open: url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as! String, annotation: options[UIApplicationOpenURLOptionsKey.sourceApplication])
