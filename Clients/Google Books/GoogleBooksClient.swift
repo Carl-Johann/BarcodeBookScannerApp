@@ -50,6 +50,14 @@ struct GoogleBooksClient {
         
     }
     
+    
+    func getFavoriteBooksFromUser() {
+        
+        
+    }
+    
+    
+    
     func flickrURLFromParameters(_ parameters: [String: AnyObject] = [:], _ isSearchCall: String? = nil) -> URL {
         
         var components = URLComponents()

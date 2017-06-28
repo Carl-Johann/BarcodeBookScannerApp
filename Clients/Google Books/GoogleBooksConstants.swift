@@ -11,7 +11,7 @@ import Foundation
 extension GoogleBooksClient {
     
     struct GoogleBooksConstants {
-        static let ApiKey = "AIzaSyBvApbiuuo8bSpkLShEFG_5r6l3y38j9lE"
+        static let ApiKey = "AIzaSyD7_eufgD6tYKJxPx9yBi00e-GmH2gdQj4"
         static let APIScheme = "https"
         static let APIHost = "www.googleapis.com"
         static let APIPath = "/books/v1/volumes"
