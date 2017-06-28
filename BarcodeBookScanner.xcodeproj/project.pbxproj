@@ -1,0 +1,454 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		236DE9801F0180BF0035A420 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236DE97F1F0180BF0035A420 /* CoreDataStack.swift */; };
+		236DE9831F0198F00035A420 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 236DE9821F0198F00035A420 /* GoogleService-Info.plist */; };
+		236DE9851F02BCE80035A420 /* BookShelf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236DE9841F02BCE80035A420 /* BookShelf.swift */; };
+		236DE9881F02C0320035A420 /* BookCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236DE9871F02C0320035A420 /* BookCollectionViewCell.swift */; };
+		236DE98A1F03BBFE0035A420 /* client_632875715906-rqmos3o1ce9km1j2b4roobqkq3o1oj7n.apps.googleusercontent.com.plist in Resources */ = {isa = PBXBuildFile; fileRef = 236DE9891F03BBFE0035A420 /* client_632875715906-rqmos3o1ce9km1j2b4roobqkq3o1oj7n.apps.googleusercontent.com.plist */; };
+		239302311F006177009C1FC2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239302301F006177009C1FC2 /* AppDelegate.swift */; };
+		239302331F006177009C1FC2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239302321F006177009C1FC2 /* LoginViewController.swift */; };
+		239302361F006177009C1FC2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 239302341F006177009C1FC2 /* Main.storyboard */; };
+		239302381F006177009C1FC2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 239302371F006177009C1FC2 /* Assets.xcassets */; };
+		2393023B1F006177009C1FC2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 239302391F006177009C1FC2 /* LaunchScreen.storyboard */; };
+		239302471F0061DF009C1FC2 /* GoogleBooksClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239302461F0061DF009C1FC2 /* GoogleBooksClient.swift */; };
+		239302491F0061EC009C1FC2 /* GoogleBooksConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239302481F0061EC009C1FC2 /* GoogleBooksConstants.swift */; };
+		2393024B1F006209009C1FC2 /* BarcodeScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2393024A1F006209009C1FC2 /* BarcodeScannerViewController.swift */; };
+		DB4D9119CA3884E8C81B0B32 /* Pods_BarcodeBookScanner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A201DBB21425CCAD36F4CA /* Pods_BarcodeBookScanner.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		00A201DBB21425CCAD36F4CA /* Pods_BarcodeBookScanner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BarcodeBookScanner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		236DE97F1F0180BF0035A420 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		236DE9811F018CFC0035A420 /* BarcodeBookScanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BarcodeBookScanner.entitlements; sourceTree = "<group>"; };
+		236DE9821F0198F00035A420 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		236DE9841F02BCE80035A420 /* BookShelf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookShelf.swift; sourceTree = "<group>"; };
+		236DE9871F02C0320035A420 /* BookCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookCollectionViewCell.swift; sourceTree = "<group>"; };
+		236DE9891F03BBFE0035A420 /* client_632875715906-rqmos3o1ce9km1j2b4roobqkq3o1oj7n.apps.googleusercontent.com.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "client_632875715906-rqmos3o1ce9km1j2b4roobqkq3o1oj7n.apps.googleusercontent.com.plist"; path = "../../../Downloads/client_632875715906-rqmos3o1ce9km1j2b4roobqkq3o1oj7n.apps.googleusercontent.com.plist"; sourceTree = "<group>"; };
+		2393022D1F006177009C1FC2 /* BarcodeBookScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BarcodeBookScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		239302301F006177009C1FC2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		239302321F006177009C1FC2 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		239302351F006177009C1FC2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		239302371F006177009C1FC2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2393023A1F006177009C1FC2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2393023C1F006177009C1FC2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		239302461F0061DF009C1FC2 /* GoogleBooksClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GoogleBooksClient.swift; path = "Clients/Google Books/GoogleBooksClient.swift"; sourceTree = "<group>"; };
+		239302481F0061EC009C1FC2 /* GoogleBooksConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GoogleBooksConstants.swift; path = "Clients/Google Books/GoogleBooksConstants.swift"; sourceTree = "<group>"; };
+		2393024A1F006209009C1FC2 /* BarcodeScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewController.swift; sourceTree = "<group>"; };
+		42E65269B4EE9C15E70D8180 /* Pods-BarcodeBookScanner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BarcodeBookScanner.release.xcconfig"; path = "Pods/Target Support Files/Pods-BarcodeBookScanner/Pods-BarcodeBookScanner.release.xcconfig"; sourceTree = "<group>"; };
+		8970E74F6D258A980E4D89A6 /* Pods-BarcodeBookScanner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BarcodeBookScanner.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BarcodeBookScanner/Pods-BarcodeBookScanner.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2393022A1F006177009C1FC2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB4D9119CA3884E8C81B0B32 /* Pods_BarcodeBookScanner.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		236DE9861F02C0140035A420 /* Book Shelf */ = {
+			isa = PBXGroup;
+			children = (
+				236DE9841F02BCE80035A420 /* BookShelf.swift */,
+				236DE9871F02C0320035A420 /* BookCollectionViewCell.swift */,
+			);
+			name = "Book Shelf";
+			sourceTree = "<group>";
+		};
+		239302241F006177009C1FC2 = {
+			isa = PBXGroup;
+			children = (
+				2393022F1F006177009C1FC2 /* BarcodeBookScanner */,
+				2393022E1F006177009C1FC2 /* Products */,
+				4CB65379FCD484E443A6B223 /* Pods */,
+				C9C0B6A681DA0C72A0B8CCA3 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2393022E1F006177009C1FC2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2393022D1F006177009C1FC2 /* BarcodeBookScanner.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2393022F1F006177009C1FC2 /* BarcodeBookScanner */ = {
+			isa = PBXGroup;
+			children = (
+				239302301F006177009C1FC2 /* AppDelegate.swift */,
+				236DE97F1F0180BF0035A420 /* CoreDataStack.swift */,
+				239302441F0061CC009C1FC2 /* Clients */,
+				236DE9861F02C0140035A420 /* Book Shelf */,
+				239302321F006177009C1FC2 /* LoginViewController.swift */,
+				2393024A1F006209009C1FC2 /* BarcodeScannerViewController.swift */,
+				239302341F006177009C1FC2 /* Main.storyboard */,
+				239302371F006177009C1FC2 /* Assets.xcassets */,
+				239302391F006177009C1FC2 /* LaunchScreen.storyboard */,
+				2393023C1F006177009C1FC2 /* Info.plist */,
+				236DE9821F0198F00035A420 /* GoogleService-Info.plist */,
+				236DE9811F018CFC0035A420 /* BarcodeBookScanner.entitlements */,
+				236DE9891F03BBFE0035A420 /* client_632875715906-rqmos3o1ce9km1j2b4roobqkq3o1oj7n.apps.googleusercontent.com.plist */,
+			);
+			path = BarcodeBookScanner;
+			sourceTree = "<group>";
+		};
+		239302441F0061CC009C1FC2 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				239302451F0061D0009C1FC2 /* Google Books */,
+			);
+			name = Clients;
+			sourceTree = "<group>";
+		};
+		239302451F0061D0009C1FC2 /* Google Books */ = {
+			isa = PBXGroup;
+			children = (
+				239302461F0061DF009C1FC2 /* GoogleBooksClient.swift */,
+				239302481F0061EC009C1FC2 /* GoogleBooksConstants.swift */,
+			);
+			name = "Google Books";
+			sourceTree = "<group>";
+		};
+		4CB65379FCD484E443A6B223 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8970E74F6D258A980E4D89A6 /* Pods-BarcodeBookScanner.debug.xcconfig */,
+				42E65269B4EE9C15E70D8180 /* Pods-BarcodeBookScanner.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		C9C0B6A681DA0C72A0B8CCA3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				00A201DBB21425CCAD36F4CA /* Pods_BarcodeBookScanner.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2393022C1F006177009C1FC2 /* BarcodeBookScanner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2393023F1F006177009C1FC2 /* Build configuration list for PBXNativeTarget "BarcodeBookScanner" */;
+			buildPhases = (
+				EED90D8E52F1CCAFE5850C7E /* [CP] Check Pods Manifest.lock */,
+				239302291F006177009C1FC2 /* Sources */,
+				2393022A1F006177009C1FC2 /* Frameworks */,
+				2393022B1F006177009C1FC2 /* Resources */,
+				282F630AFEDA0D8496AB4979 /* [CP] Embed Pods Frameworks */,
+				D48AAF00CB90B5622873EF20 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BarcodeBookScanner;
+			productName = BarcodeBookScanner;
+			productReference = 2393022D1F006177009C1FC2 /* BarcodeBookScanner.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		239302251F006177009C1FC2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = "Carl-Johan";
+				TargetAttributes = {
+					2393022C1F006177009C1FC2 = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = 65MG9295K9;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = 239302281F006177009C1FC2 /* Build configuration list for PBXProject "BarcodeBookScanner" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 239302241F006177009C1FC2;
+			productRefGroup = 2393022E1F006177009C1FC2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2393022C1F006177009C1FC2 /* BarcodeBookScanner */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2393022B1F006177009C1FC2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				236DE98A1F03BBFE0035A420 /* client_632875715906-rqmos3o1ce9km1j2b4roobqkq3o1oj7n.apps.googleusercontent.com.plist in Resources */,
+				2393023B1F006177009C1FC2 /* LaunchScreen.storyboard in Resources */,
+				236DE9831F0198F00035A420 /* GoogleService-Info.plist in Resources */,
+				239302381F006177009C1FC2 /* Assets.xcassets in Resources */,
+				239302361F006177009C1FC2 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		282F630AFEDA0D8496AB4979 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BarcodeBookScanner/Pods-BarcodeBookScanner-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D48AAF00CB90B5622873EF20 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BarcodeBookScanner/Pods-BarcodeBookScanner-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EED90D8E52F1CCAFE5850C7E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		239302291F006177009C1FC2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				239302471F0061DF009C1FC2 /* GoogleBooksClient.swift in Sources */,
+				236DE9881F02C0320035A420 /* BookCollectionViewCell.swift in Sources */,
+				2393024B1F006209009C1FC2 /* BarcodeScannerViewController.swift in Sources */,
+				239302331F006177009C1FC2 /* LoginViewController.swift in Sources */,
+				236DE9851F02BCE80035A420 /* BookShelf.swift in Sources */,
+				236DE9801F0180BF0035A420 /* CoreDataStack.swift in Sources */,
+				239302491F0061EC009C1FC2 /* GoogleBooksConstants.swift in Sources */,
+				239302311F006177009C1FC2 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		239302341F006177009C1FC2 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				239302351F006177009C1FC2 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		239302391F006177009C1FC2 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2393023A1F006177009C1FC2 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2393023D1F006177009C1FC2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2393023E1F006177009C1FC2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		239302401F006177009C1FC2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8970E74F6D258A980E4D89A6 /* Pods-BarcodeBookScanner.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BarcodeBookScanner/BarcodeBookScanner.entitlements;
+				DEVELOPMENT_TEAM = 65MG9295K9;
+				INFOPLIST_FILE = BarcodeBookScanner/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Carljohan.BarcodeBookScanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		239302411F006177009C1FC2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 42E65269B4EE9C15E70D8180 /* Pods-BarcodeBookScanner.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BarcodeBookScanner/BarcodeBookScanner.entitlements;
+				DEVELOPMENT_TEAM = 65MG9295K9;
+				INFOPLIST_FILE = BarcodeBookScanner/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Carljohan.BarcodeBookScanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		239302281F006177009C1FC2 /* Build configuration list for PBXProject "BarcodeBookScanner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2393023D1F006177009C1FC2 /* Debug */,
+				2393023E1F006177009C1FC2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2393023F1F006177009C1FC2 /* Build configuration list for PBXNativeTarget "BarcodeBookScanner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				239302401F006177009C1FC2 /* Debug */,
+				239302411F006177009C1FC2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 239302251F006177009C1FC2 /* Project object */;
+}
