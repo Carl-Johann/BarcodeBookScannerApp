@@ -11,7 +11,7 @@ import Foundation
 extension GoogleBooksClient {
     
     struct GoogleBooksConstants {
-        static let ApiKey = "AIzaSyD7_eufgD6tYKJxPx9yBi00e-GmH2gdQj4"
+        static let ApiKey = "AIzaSyA8sOQ5kQ_ksODktYp_O9ogrUKJc3yau-k"
         static let APIScheme = "https"
         static let APIHost = "www.googleapis.com"
         static let APIPath = "/books/v1/volumes"
@@ -32,7 +32,17 @@ extension GoogleBooksClient {
         static let key = "key"
     }
     
-    
+    struct GoogleBookShelfID {
+        static let Favorites = 0
+        static let Purchased = 1
+        static let ToRead = 2
+        static let ReadingNow = 3
+        static let HaveRead = 4
+        static let Reviewed = 5
+        static let RecentlyViewed = 6
+        static let MyEbooks = 7
+        static let BooksForYou = 8
+    }
     
     
     

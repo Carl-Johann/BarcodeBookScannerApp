@@ -24,7 +24,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <segue destination="d0w-vt-FrZ" kind="presentation" identifier="LoginToCollectionView" id="1Ea-0U-hwc"/>
+                        <segue destination="ugY-OK-Yi9" kind="presentation" identifier="LoginSegue" id="HJf-1D-GLr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kho-c4-wah" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -32,92 +32,122 @@
             <point key="canvasLocation" x="-1761" y="37"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="0w7-Av-7sX">
+        <scene sceneID="80u-Ij-Ao7">
             <objects>
-                <navigationController id="d0w-vt-FrZ" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="r3P-7l-zt9"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="3IZ-kj-ozs">
+                <navigationController id="ugY-OK-Yi9" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="dma-J9-VRL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="qoU-8s-y7R" kind="relationship" relationship="rootViewController" id="HSx-tc-uXB"/>
+                        <segue destination="7Dz-1f-9rm" kind="relationship" relationship="rootViewController" id="5HU-Ge-e00"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="5Qg-9U-AQz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CBh-yC-iqw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-942" y="36"/>
+            <point key="canvasLocation" x="-1007" y="36"/>
         </scene>
         <!--Book Shelf-->
-        <scene sceneID="Ytn-wp-HUP">
+        <scene sceneID="JXz-75-D1l">
             <objects>
-                <collectionViewController id="qoU-8s-y7R" customClass="BookShelf" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="uIS-vu-LSz">
+                <viewController storyboardIdentifier="BookShelVCID" id="7Dz-1f-9rm" customClass="BookShelf" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="TtI-qt-XN7"/>
+                        <viewControllerLayoutGuide type="bottom" id="kS3-O0-u6K"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="BZX-Mv-hPX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="g4i-BB-dYa">
-                            <size key="itemSize" width="100" height="130"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="BookCellID" id="7FF-tF-lP6" customClass="BookCell" customModule="BarcodeBookScanner" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="100" height="130"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="100" height="130"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SU1-fw-x4d">
-                                            <rect key="frame" x="0.0" y="0.0" width="100" height="104"/>
-                                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8OJ-Ag-QyI">
-                                            <rect key="frame" x="0.0" y="104" width="100" height="26"/>
-                                            <color key="backgroundColor" red="0.59999999999999998" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                </view>
-                                <constraints>
-                                    <constraint firstItem="SU1-fw-x4d" firstAttribute="width" secondItem="7FF-tF-lP6" secondAttribute="width" id="48m-x0-hbE"/>
-                                    <constraint firstItem="SU1-fw-x4d" firstAttribute="leading" secondItem="7FF-tF-lP6" secondAttribute="leading" id="INE-hy-J09"/>
-                                    <constraint firstAttribute="trailing" secondItem="8OJ-Ag-QyI" secondAttribute="trailing" id="Iw0-fp-eDH"/>
-                                    <constraint firstItem="SU1-fw-x4d" firstAttribute="centerX" secondItem="7FF-tF-lP6" secondAttribute="centerX" id="RVV-XG-3wc"/>
-                                    <constraint firstItem="8OJ-Ag-QyI" firstAttribute="leading" secondItem="7FF-tF-lP6" secondAttribute="leading" id="USQ-sk-TvI"/>
-                                    <constraint firstItem="SU1-fw-x4d" firstAttribute="height" secondItem="7FF-tF-lP6" secondAttribute="height" multiplier="0.8" id="Z7J-3b-vZf"/>
-                                    <constraint firstAttribute="trailing" secondItem="SU1-fw-x4d" secondAttribute="trailing" id="Zcu-0e-lRJ"/>
-                                    <constraint firstItem="SU1-fw-x4d" firstAttribute="top" secondItem="7FF-tF-lP6" secondAttribute="top" id="cro-5Z-9Z0"/>
-                                    <constraint firstItem="8OJ-Ag-QyI" firstAttribute="centerX" secondItem="7FF-tF-lP6" secondAttribute="centerX" id="qMQ-1E-1e0"/>
-                                    <constraint firstItem="8OJ-Ag-QyI" firstAttribute="height" secondItem="7FF-tF-lP6" secondAttribute="height" multiplier="0.2" id="qcJ-2j-tIR"/>
-                                    <constraint firstAttribute="bottom" secondItem="8OJ-Ag-QyI" secondAttribute="bottom" id="sQ5-K7-V7e"/>
-                                    <constraint firstItem="8OJ-Ag-QyI" firstAttribute="width" secondItem="7FF-tF-lP6" secondAttribute="width" id="ubZ-QW-dbH"/>
-                                </constraints>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9nD-bm-J9f">
+                                <rect key="frame" x="-0.5" y="-0.5" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VTM-xr-1Xl">
+                                    <size key="itemSize" width="100" height="135"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="BookCellID" id="vbi-eT-Wjs" customClass="BookCell" customModule="BarcodeBookScanner" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="100" height="135"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="135"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="f6V-W5-PrA">
+                                                    <rect key="frame" x="0.0" y="0.0" width="100" height="108"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydJ-lq-nkn">
+                                                    <rect key="frame" x="0.0" y="108" width="100" height="27"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="ydJ-lq-nkn" secondAttribute="bottom" id="AHR-HD-fpS"/>
+                                            <constraint firstItem="ydJ-lq-nkn" firstAttribute="width" secondItem="vbi-eT-Wjs" secondAttribute="width" id="I9j-VL-pOd"/>
+                                            <constraint firstItem="f6V-W5-PrA" firstAttribute="leading" secondItem="vbi-eT-Wjs" secondAttribute="leading" id="Jeb-Pq-j8N"/>
+                                            <constraint firstItem="f6V-W5-PrA" firstAttribute="top" secondItem="vbi-eT-Wjs" secondAttribute="top" id="Krn-30-fCz"/>
+                                            <constraint firstItem="f6V-W5-PrA" firstAttribute="height" secondItem="vbi-eT-Wjs" secondAttribute="height" multiplier="0.8" id="RWh-T8-SNV"/>
+                                            <constraint firstItem="ydJ-lq-nkn" firstAttribute="leading" secondItem="vbi-eT-Wjs" secondAttribute="leading" id="Vz3-Sl-TgM"/>
+                                            <constraint firstItem="ydJ-lq-nkn" firstAttribute="height" secondItem="vbi-eT-Wjs" secondAttribute="height" multiplier="0.2" id="bMB-ec-Vab"/>
+                                            <constraint firstItem="f6V-W5-PrA" firstAttribute="width" secondItem="vbi-eT-Wjs" secondAttribute="width" id="d7i-MO-caR"/>
+                                            <constraint firstAttribute="trailing" secondItem="ydJ-lq-nkn" secondAttribute="trailing" id="rV8-JX-NsM"/>
+                                            <constraint firstAttribute="trailing" secondItem="f6V-W5-PrA" secondAttribute="trailing" id="tpe-5R-jnK"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="bookCoverImage" destination="f6V-W5-PrA" id="Z2f-a2-Btf"/>
+                                            <outlet property="bookTitle" destination="ydJ-lq-nkn" id="h9x-Vf-3AD"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
                                 <connections>
-                                    <outlet property="bookCoverImage" destination="SU1-fw-x4d" id="HqR-io-BTf"/>
-                                    <outlet property="bookTitle" destination="8OJ-Ag-QyI" id="Lwf-sK-0Ms"/>
+                                    <outlet property="dataSource" destination="7Dz-1f-9rm" id="Oo0-YL-ODq"/>
+                                    <outlet property="delegate" destination="7Dz-1f-9rm" id="7F1-uR-g5y"/>
                                 </connections>
-                            </collectionViewCell>
-                        </cells>
-                        <connections>
-                            <outlet property="dataSource" destination="qoU-8s-y7R" id="GBs-XV-SyI"/>
-                            <outlet property="delegate" destination="qoU-8s-y7R" id="rDH-Am-FVD"/>
-                        </connections>
-                    </collectionView>
-                    <navigationItem key="navigationItem" id="xAm-FI-k4z"/>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="AFi-0u-Ool" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="9nD-bm-J9f" firstAttribute="centerY" secondItem="BZX-Mv-hPX" secondAttribute="centerY" id="GBo-mu-o05"/>
+                            <constraint firstItem="9nD-bm-J9f" firstAttribute="width" secondItem="BZX-Mv-hPX" secondAttribute="width" id="IKC-29-kzs"/>
+                            <constraint firstItem="9nD-bm-J9f" firstAttribute="height" secondItem="BZX-Mv-hPX" secondAttribute="height" id="TS9-LX-Zgs"/>
+                            <constraint firstItem="9nD-bm-J9f" firstAttribute="centerX" secondItem="BZX-Mv-hPX" secondAttribute="centerX" id="qKc-gD-CEH"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="krZ-ro-Ayn"/>
+                    <connections>
+                        <outlet property="collectionView" destination="9nD-bm-J9f" id="0qu-3d-TqJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BJ0-IO-YmE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-138.40000000000001" y="35.532233883058474"/>
+            <point key="canvasLocation" x="-215.19999999999999" y="35.532233883058474"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="sMM-4s-Qyx">
+            <objects>
+                <navigationController storyboardIdentifier="barcodeNavigationController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7KS-yw-cRi" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Mff-jR-X0m">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="YgR-yr-b4j"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2OH-ej-vgs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="599" y="36"/>
         </scene>
         <!--Barcode Scanner View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="BarcodeScannerViewController" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="barcodeScannerViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="BarcodeScannerViewController" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -127,10 +157,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
+                    <navigationItem key="navigationItem" id="DwN-SA-KQG"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="599" y="36"/>
+            <point key="canvasLocation" x="1356" y="36"/>
         </scene>
     </scenes>
 </document>

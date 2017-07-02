@@ -6,82 +6,126 @@
 //  Copyright © 2017 Carl-Johan. All rights reserved.
 //
 
-//import PureLayout
 import UIKit
-import Foundation
 import GoogleSignIn
-//import GoogleToolboxForMac
 import Firebase
-import GTMOAuth2
-//import FirebaseInstanceID
+import FirebaseStorage
+import FirebaseDatabase
 
-class BookShelf: UICollectionViewController {
+class BookShelf: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {//, NSFetchedResultsControllerDelegate {
     
-    var currentUser: GIDGoogleUser?
+    @IBOutlet weak var collectionView: UICollectionView!
+    var lort = [[String:AnyObject]]()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        print("Access Token: \(GIDSignIn.sharedInstance().currentUser.authentication.accessToken!)")
+        
+        // Load the users eBooks
+        loadBookshelf()
+    }
     
     override func viewDidLoad() {
+        
+        let cameraButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(handleCameraButtonAction))
+        navigationItem.rightBarButtonItem = cameraButton
+//        navigationItem.rightBarButtonItem = cameraButton
+        
+        
         let button = UIButton(frame: CGRect(x: 100, y: 400, width: 100, height: 50))
-        //button.frame = CGRect(origin: 100, size: 100)
-        //        button.center = CGPoint(x: 100, y: 100)
         button.backgroundColor = UIColor.cyan
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         view.addSubview(button)
         
-        //        view.bringSubview(toFront: button)
     }
-    
-    
+
+    func handleCameraButtonAction() {
+//        let sb = storyboard
+//        let lort = sb?.instantiateViewController(withIdentifier: "barcodeNavigationController")
+//        present(, animated: <#T##Bool#>, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
+        let barcodeVC = self.storyboard!.instantiateViewController(withIdentifier: "barcodeScannerViewController") as! BarcodeScannerViewController
+        self.navigationController!.pushViewController(barcodeVC, animated: true)
+
+    }
     
     func buttonAction() {
         
-//    InstanceID.token()
+        self.collectionView!.reloadData()
         
-        if (GIDSignIn.sharedInstance().currentUser != nil) {
-            guard let accessToken = GIDSignIn.sharedInstance().currentUser.authentication.accessToken else { print("AccesToken == nil"); return }
-          
-            
-            guard let url = URL(string: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/7/volumes?access_token=\(accessToken)") else
-            { print("Url is invalid"); return }
-            let request = URLRequest(url: url)
-            
-            
-            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
-                if error != nil {
-                    print("Error occured", error!)
-                    return
-                }
-                
-                let parsedResult = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as AnyObject
-                print(parsedResult)
-                
-                guard let session = parsedResult["items"] as? [[String:AnyObject]] else {
-                    print("Couldn't find items in parsedResult ")
-                    
-                    return
-                }
-                
-                
-//                for book in parsedResult {
-//                
-//                
-//                }
-                
-                
+        
+    }
+    
+    func loadBookshelf() {
+        
+        GoogleBooksClient.sharedInstance.getSpecificBookShelfFromUser(BookshelfID: 7) { (success, items) in
+            if success == false {
+                // RAISE ERROR
+                return
             }
-            task.resume()
+            
+            
+            for book in items {
+                print("A book")
+                self.lort.append(book)
+            }
+            
+            DispatchQueue.main.async { self.collectionView!.reloadData() }
         }
+        
+    }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return lort.count
     }
     
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
     
     
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BookCellID", for: indexPath) as! BookCell
-        //cell.backgroundColor = UIColor.black
-        // Configure the cell
+        let bookForIndexPath = lort[indexPath[1]]
+        
+        // the users current database reference url. By using this reference, you are on level with the values 'email' and 'name'
+//        guard let firebaseUserUID = Auth.auth().currentUser?.uid else { print("Current Firebase user UID == nil"); return cell }
+//        let ref = Database.database().reference(fromURL: "https://barcodebookscanner.firebaseio.com/Users/\(firebaseUserUID)/")
+//        
+//        ref.observe(.value, with: { (snapshot) in
+//            print(snapshot.value!)
+//            let lort = snapshot.value as! [AnyHashable: Any]
+//            
+//            
+////            let lort = snapshot as [AnyHashable: Any]
+////            print(snapshot["email"])
+//        })
+
+        
+//
+//        
+//        
+//
+//        func purgeOutstandingWrites()        
+//        $var isPersistenceEnabled: Bool { get set }
+//        
+//        
+//        
+//        
+//        ref.child("books")
+//        
+//        let values = [
+//            "title": ,
+//            "author": ,
+//            "description": ,
+//            "ISBN_13": ,
+//            "ISBN_10": ,
+//            "purchaseLink": ,
+//            "currencyCode": ,
+//            "amountInMicros":
+//        ]
+//        
+//        ref.updateChildValues(<#T##values: [AnyHashable : Any]##[AnyHashable : Any]#>) { (error, reference) in
+//            
+//        }
+//        
+        //        cell.bookCoverImage
+        
         return cell
     }
     
