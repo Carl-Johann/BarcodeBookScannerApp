@@ -132,9 +132,10 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         
         print("Scan and network calls were succesful")
         
-//        let bookDetailVC = BookDetailViewController()
-//        let bookDetailVCNavigationController = UINavigationController(rootViewController: bookDetailVC)
-//        present(bookDetailVCNavigationController, animated: true, completion: nil)
+        let bookDetailVC = BookDetailViewController()
+        let bookDetailVCNavigationController: UINavigationController = UINavigationController(rootViewController: bookDetailVC)
+        
+        present(bookDetailVCNavigationController, animated: true, completion: nil)
 
     }
     

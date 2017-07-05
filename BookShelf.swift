@@ -25,8 +25,8 @@ class BookShelf: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     override func viewDidLoad() {
         print("BookShelf did load")
         collectionView.backgroundColor = .red
-//        print("Access Token: \(GIDSignIn.sharedInstance().currentUser.authentication.accessToken!)")
-        // Load the users eBooks
+        print("Access Token: \(GIDSignIn.sharedInstance().currentUser.authentication.accessToken!)")
+        // Load the users books
         loadBookshelf()
         
         
