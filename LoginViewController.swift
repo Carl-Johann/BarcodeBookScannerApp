@@ -113,11 +113,6 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         getFBUserInfo()
     }
     
-//    func sign(_ signIn: GIDSignIn!, present viewController: UIViewController!) {
-//        print(13123131)
-//        present(viewController, animated: true, completion: nil)
-//    }
-    
     
     
     func getFBUserInfo() {
@@ -173,9 +168,10 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
                     print("An error occurred updating users childValues", error!); return
                 }
             })
-            
-            self.performSegue(withIdentifier: "LoginSegue", sender: self)
             print("Successfully signed/updated user into Firebase")
+//            self.performSegue(withIdentifier: "loginSegue", sender: self)
+            self.performSegue(withIdentifier: "lorteSegue", sender: self)
+            
         }
     }
   

@@ -13,7 +13,7 @@ struct GoogleBooksClient {
     
     let session = URLSession.shared
 
-    func getBookInformationFromBarcode( _ barcode: Int, CHForBookInformation: @escaping (_ succes: Bool, _ data: [String : AnyObject]) -> Void) {
+    func getBookInformationFromBarcode( _ barcode: Int, CHForBookInformation: @escaping (_ succes: Bool, _ data: [String : AnyObject], _ errorMessage: String) -> Void) {
         DispatchQueue.main.async {
             
             
@@ -31,15 +31,31 @@ struct GoogleBooksClient {
             let request = NSMutableURLRequest(url: url)
             
             let task = self.session.dataTask(with: request as URLRequest) { data, response, error in
-                
                 if error != nil {
-                    print("Couldn't fetch sessionID")
-                    CHForBookInformation(false, [:]); return
+                    print("An error occured trying to download book")
+                    CHForBookInformation(false, [:], "Networking error. Try again later"); return
                 }
                 
+                
                 let parsedResult = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as AnyObject
-            
-                CHForBookInformation(true, parsedResult as! [String : AnyObject])
+                guard let items = parsedResult as? [String : AnyObject] else {
+                    print("Items couldn't be safely converted to '[String : AnyObject]'")
+                    CHForBookInformation(false, [:], "Internal error. Try agian later") ; return
+                }
+                guard let totalItems = items["totalItems"] as? Int else {
+                    print("Error retrieving 'totalItems' in 'items'")
+                    CHForBookInformation(false, [:], "Internal error. Try agian later"); return
+                }
+                
+                // Checks if any books have been retrieved.
+                if totalItems == 0 {
+                    print("No items were downloaded. Book not supported")
+                    CHForBookInformation(false, [:], "Book is not supported, try another book")
+                    return
+                }
+                
+                CHForBookInformation(true, parsedResult as! [String : AnyObject], "")
+                                     
             }
             
             

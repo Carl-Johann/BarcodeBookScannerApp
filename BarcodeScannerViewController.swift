@@ -20,50 +20,44 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        
-//        let label = UILabel(frame: CGRect(x: 160, y: 200, width: 200, height: 21))
-//        
-//        label.layer.borderColor = UIColor.black.cgColor
-//        label.layer.borderWidth = 1
-//        label.layer.cornerRadius = 4
-//        
-//        view.addSubview(label)
-//        view.bringSubview(toFront: label)
-//        
-        
+        print("BarcodeScannerViewController did load")
         // Sets up the camera, and barcode scanner
         setupCamera()
         
-        
-        
+
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        if session.isRunning {
-            session.stopRunning()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        print("BarcodeScannerViewController will appear")
+        DispatchQueue.main.async {
+            // If session is not running
+            if !(self.session.isRunning) {
+                self.session.startRunning()
+                
+             //   self.checkAndAddOutput()
+            }
         }
     }
     
-    
-    
-    func getInformationFromScannedBook(items: [[String : AnyObject]]) -> [AnyHashable : Any] {
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        print("BarcodeScannerViewController did disappear")
         
-//        var values = [AnyHashable : Any]()
-//        
-//        var isbn13 = ""
-//        var isbn10 = ""
-//        var title = ""
-//        var smallThumbnail = ""
-//        var thumbnail = ""
+//        DispatchQueue.main.async {
+//            if self.session.isRunning { self.session.stopRunning() }
+//        }
+        
+    }
+    func getInformationFromScannedBook(items: [[String : AnyObject]]) -> [String : Any] {
+        
         var values = [
             "title": "",
             "isbn13": "",
             "isbn10": "",
             "smallThumbnail": "",
             "thumbnail": ""
-        ] as [AnyHashable : Any]
+        ] as [String : Any]
 
         
         // Safely unwraps the desired values from the JSON gotten from scanning the barcode, and calling the 'getBookInformationFromBarcode' function
@@ -82,8 +76,8 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
                 guard let isbnNumberIdentifier = identifier["type"] as? String else { print("'type' wasn't accessible in 'identifier' in 'industryIdentifiers'"); return values }
                 
                 // Checks and sets the corensponding isbn number values
-                if isbnNumberIdentifier == "isbn10" { values["isbn10"] = isbnNumber }
-                else if isbnNumberIdentifier == "isbn13" { values["isbn13"] = isbnNumber }
+                if isbnNumberIdentifier == "ISBN_10" { values["isbn10"] = isbnNumber }
+                else if isbnNumberIdentifier == "ISBN_13" { values["isbn13"] = isbnNumber }
                 
             }
             
@@ -94,14 +88,6 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         
         }
         
-//        values = [
-//            "title": title,
-//            "ISBN_13": isbn13,
-//            "ISBN_10": isbn10,
-//            "smallThumbnail": smallThumbnail,
-//            "thumbnail": thumbnail
-//        ]
-        
         return values
     }
     
@@ -109,38 +95,47 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
     
     
     
-    func updateChildValues(values: [AnyHashable : Any]) {
+    func updateChildValues(values: [String : Any]) {
         guard let firebaseUserUID = Auth.auth().currentUser?.uid else { print("Current Firebase user UID == nil"); return }
         let ref = Database.database().reference(fromURL: "https://barcodebookscanner.firebaseio.com/Users/\(firebaseUserUID)/")
         let usersBooksRef = ref.child("books")
         
-        let isbn13 = values["isbn13"] as! String
-        let isbn10 = values["isbn10"] as! String
+        guard let isbn13 = values["isbn13"] as? String else { print("'isbn13' couldn't safely convert to type 'String'"); return }
+        guard let isbn10 = values["isbn10"] as? String else { print("'isbn10' couldn't safely convert to type 'String'"); return }
+        
+         // To avoid an empty books-child 'title' in our Firebase database,
+        // we check if any of the isbn values are empty. If both of them are empty we raise an error
         
         var scannedBookRef = usersBooksRef.child(isbn13)
-        
-        // To avoid an empty books-child 'title' in our Firebase database,
-        // we check if any of the isbn values are empty. If both of them are empty we raise an error
-        if isbn13.isEmpty {
-            scannedBookRef = usersBooksRef.child(isbn10)
-        } else if isbn10.isEmpty {
-            // If both isbn values are empty we do not want to update our Firebase database, and we want to inform the user.
-            presentISBNScanningError()
-            return
-        }
 
         
+        guard (!(isbn10.isEmpty) || !(isbn13.isEmpty)) else {
+            //If isbn values are empty we do not want to update our Firebase database. We inform the user.
+            presentISBNScanningError(); return
+        }
         
+        // Checks if 'isbn13' is empty, we do not need to check-and-set 'isbn10' because we already set 'usersBooksRef's' child
+        if !(isbn13.isEmpty) {
+            scannedBookRef = usersBooksRef.child(isbn10)
+        }
+        
+        // We have a non-empty isbn value and can update it's reference' child values
         scannedBookRef.updateChildValues(values) { (error, reference) in
             if error != nil {
-                
-                
-                return
+                self.updateChildValuesErrorAlert()
+                print("error occored");return
             }
+            
+            
         }
         
         
-        print("Scan and network calls were succesfull")
+        print("Scan and network calls were succesful")
+        
+//        let bookDetailVC = BookDetailViewController()
+//        let bookDetailVCNavigationController = UINavigationController(rootViewController: bookDetailVC)
+//        present(bookDetailVCNavigationController, animated: true, completion: nil)
+
     }
     
     
@@ -153,4 +148,3 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
     }
     
 }
-

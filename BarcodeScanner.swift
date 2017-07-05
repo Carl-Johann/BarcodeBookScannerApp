@@ -19,7 +19,7 @@ extension BarcodeScannerViewController {
         
         // Create a session object.
         session = AVCaptureSession()
-        let metadataOutput = AVCaptureMetadataOutput()
+        
         
         // Set the captureDevice.
         let videoCaptureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
@@ -36,35 +36,35 @@ extension BarcodeScannerViewController {
             scanningNotPossible()
         }
         
+        checkAndAddOutput()
+        
+        // Add previewLayer and have it show the video data.
+        previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        previewLayer.frame = view.layer.bounds
+        view.layer.addSublayer(previewLayer)
+        
+        // Begin the capture session.
+        DispatchQueue.main.async { self.session.startRunning() }
+        
+        
+    }
+    
+    func checkAndAddOutput() {
+        let metadataOutput = AVCaptureMetadataOutput()
+        
         if session.canAddOutput(metadataOutput) {
             session.addOutput(metadataOutput)
             
-            let rectOfInterest = CGRect(x: 160.0, y: 200.0, width: 200.0, height: 21.0)
-            
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
             metadataOutput.metadataObjectTypes = [AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code]
-            //metadataOutput.rectOfInterest = rectOfInterest
-            
+            print(1, session.outputs)
             session.commitConfiguration()
         } else {
             print("Couldn't add output")
         }
         
-        
-        // Add previewLayer and have it show the video data.
-        previewLayer = AVCaptureVideoPreviewLayer(session: session)
-        let cameraFrame = view.layer.bounds
-        cameraFrame.insetBy(dx: 0, dy: navigationController!.navigationBar.frame.height)
-        previewLayer.frame = cameraFrame
-        view.layer.addSublayer(previewLayer)
-        
-        // Begin the capture session.
-        session.startRunning()
-        
-        
+    
     }
-    
-    
     
     
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
@@ -83,7 +83,7 @@ extension BarcodeScannerViewController {
             
             // Avoid a very buzzy device.
             session.removeOutput(session.outputs.first as! AVCaptureOutput)
-            session.stopRunning()
+            //session.stopRunning()
             
             
         }
@@ -102,14 +102,20 @@ extension BarcodeScannerViewController {
         
         // making an API call with the retrived code
         DispatchQueue.main.async {
-            GoogleBooksClient.sharedInstance.getBookInformationFromBarcode(trimmedCode) { (succes, data) in
-                
+            GoogleBooksClient.sharedInstance.getBookInformationFromBarcode(trimmedCode) { (succes, data, errorMessage) in
+                print(12313123)
                 // Check for success
-                guard (succes != false) else { print("Succes value from 'getBookInformationFromBarcode' == false"); return }
+                if succes == false {
+                    print("Succes value from 'getBookInformationFromBarcode' == false")
+                    self.presentBarcodeErrorMessage(errorMessage: errorMessage)
+                    return
+                }
                 
                 // Safely unwrap the data gotten from the API call
                 guard let items = data["items"] as? [[String : AnyObject]] else { print("Couldn't access 'items' in data"); return }
                 print(items)
+                
+                
                 let values = self.getInformationFromScannedBook(items: items)
                 self.updateChildValues(values: values)
             }
@@ -120,20 +126,32 @@ extension BarcodeScannerViewController {
     
     
     
-// MARK: - Alert functions
+// MARK: - Alert's and supporting functions
     func scanningNotPossible() {
         let alert = UIAlertController(title: "Can't Scan.", message: "Let's try a device equipped with a camera.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
     
+    func presentBarcodeErrorMessage(errorMessage: String) {
+        let alert = UIAlertController(title: "Error occured", message: errorMessage, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Try again", style: .default, handler: { (action) in
+//            self.checkAndAddOutput()
+            self.checkAndAddOutput()
+            
+            
+            
+        }))
+//        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: handleTryAgainError))
+        present(alert, animated: true, completion: nil)
+    }
     
     func presentISBNScanningError() {
         let alert = UIAlertController(title: "Error occured",
-            message: "Scan agian, if the error persists, book is not properly supported and can't be scanned",
-            preferredStyle: .alert)
-        
-        print("ERROR: Both isbn values were empty")
+                                      message: "Scan agian, if the error persists, book is not properly supported and can't be scanned",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        print("ERROR: An isbn value is empty")
         present(alert, animated: true, completion: nil)
     }
     

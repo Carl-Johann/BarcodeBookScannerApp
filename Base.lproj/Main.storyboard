@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AJW-Jk-BML">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.19" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AJW-Jk-BML">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.16"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,33 +24,46 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <segue destination="ugY-OK-Yi9" kind="presentation" identifier="LoginSegue" id="HJf-1D-GLr"/>
+                        <segue destination="JF4-fa-JYX" kind="presentation" identifier="loginSegue" id="R83-6S-puG"/>
+                        <segue destination="jc1-Yr-Ynu" kind="presentation" identifier="lorteSegue" id="3Sz-n5-BFD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kho-c4-wah" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1761" y="37"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="80u-Ij-Ao7">
+        <!--Page Scroll View Controller-->
+        <scene sceneID="qsp-db-WqV">
             <objects>
-                <navigationController id="ugY-OK-Yi9" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="dma-J9-VRL">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="7Dz-1f-9rm" kind="relationship" relationship="rootViewController" id="5HU-Ge-e00"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="CBh-yC-iqw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="jc1-Yr-Ynu" customClass="PageScrollViewController" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nkN-tb-Ds0"/>
+                        <viewControllerLayoutGuide type="bottom" id="0zm-Zi-9Bp"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="mxD-vL-qkO" customClass="p">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vC5-U3-bhM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1007" y="36"/>
+            <point key="canvasLocation" x="-1762" y="763"/>
+        </scene>
+        <!--Page View Controller-->
+        <scene sceneID="APe-Dl-e9W">
+            <objects>
+                <pageViewController restorationIdentifier="PageViewController" storyboardIdentifier="PageViewController" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="JF4-fa-JYX" customClass="PageViewController" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NSP-bX-rek" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-895" y="35"/>
         </scene>
         <!--Book Shelf-->
         <scene sceneID="JXz-75-D1l">
             <objects>
-                <viewController storyboardIdentifier="BookShelVCID" id="7Dz-1f-9rm" customClass="BookShelf" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController restorationIdentifier="BookShelfVC" storyboardIdentifier="BookShelfVC" id="7Dz-1f-9rm" customClass="BookShelf" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="TtI-qt-XN7"/>
                         <viewControllerLayoutGuide type="bottom" id="kS3-O0-u6K"/>
@@ -126,33 +139,17 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BJ0-IO-YmE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-215.19999999999999" y="35.532233883058474"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="sMM-4s-Qyx">
-            <objects>
-                <navigationController storyboardIdentifier="barcodeNavigationController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7KS-yw-cRi" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Mff-jR-X0m">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="YgR-yr-b4j"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="2OH-ej-vgs" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="599" y="36"/>
+            <point key="canvasLocation" x="-106" y="-315"/>
         </scene>
         <!--Barcode Scanner View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="barcodeScannerViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="BarcodeScannerViewController" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController restorationIdentifier="BarcodeScannerVC" storyboardIdentifier="BarcodeScannerVC" id="BYZ-38-t0r" customClass="BarcodeScannerViewController" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                    <view key="view" contentMode="scaleToFill" restorationIdentifier="BarcodeScannerVC" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -161,7 +158,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1356" y="36"/>
+            <point key="canvasLocation" x="-106" y="355"/>
         </scene>
     </scenes>
 </document>
