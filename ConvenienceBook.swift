@@ -12,11 +12,19 @@ import UIKit
 
 struct ConvenienceBook {
     
+    var isThumbnailAvailable: Bool = false
+    
     var title = ""
     var isbn13 = ""
     var isbn10 = ""
+    
     var smallThumbnail = ""
     var thumbnail = ""
+    var thumbnailIsSmall = ""
+    var mediumThumbnail = ""
+    var largeThumbnail = ""
+    var extraLargeThumbnail = ""
+    
     var description = ""
     var publisher = ""
     var publishedDate = ""
@@ -25,6 +33,7 @@ struct ConvenienceBook {
     var mainCategory = ""
     var categories = ""
     var rating = ""
+    
     
     func getAllValues() -> [String : String] {
         let values: [String : String] = [
@@ -46,64 +55,53 @@ struct ConvenienceBook {
         return values
     }
     
-    
-    func getValuesToMakeUITextViewsOf() -> [String : String]{
+    func getBiggestThumbnail() -> String {
         
-        var ValuesToMakeUITextViewsOf: [String : String] = [
+        // Ordered by size. Last is the largest
+        var thumbnails: [String : String] = [
+            "smallThumbnail": self.smallThumbnail,
+            "thumbnail": self.thumbnail,
+            "thumbnailIsSmall": self.thumbnailIsSmall,
+            "mediumThumbnail": self.mediumThumbnail,
+            "largeThumbnail": self.largeThumbnail,
+            "extraLargeThumbnail": self.extraLargeThumbnail
+        ]
+        
+        for thumbnailValue in thumbnails { if thumbnailValue.value.isEmpty { thumbnails.removeValue(forKey: thumbnailValue.key) } }
+        // Returns the last value, which is the largest image.
+        var largestThumbnail = ""
+        if !(thumbnails.isEmpty) { largestThumbnail = thumbnails.values.reversed().first! }
+        return largestThumbnail
+    }
+    
+    func getValuesToMakeUIViewsOf() -> [String : String]{
+        
+        var ValuesToMakeUIViewsOf: [String : String] = [
             "Title": self.title,
             "Description": self.description,
             "Publisher": self.publisher,
-            "Published Date": self.publishedDate,
+            "Publish Date": self.publishedDate,
             "Page Count": self.numberOfPages,
             "Main Category": self.mainCategory,
             "Rating": self.rating
         ]
         
+        let (authorKeyString, authorValueString) = cleanAndCreateString(pluralKey: "Authors", singularKeyForm: "Author", stringToIterate: self.authors)
+        let (categoryKeyString, categoryValueString) = cleanAndCreateString(pluralKey: "Categories", singularKeyForm: "Category", stringToIterate: self.categories)
+        
+        ValuesToMakeUIViewsOf.updateValue(authorValueString, forKey: authorKeyString)
+        ValuesToMakeUIViewsOf.updateValue(categoryValueString, forKey: categoryKeyString)
+        
         // Removes all the empty key-value pairs in the array
-        for value in ValuesToMakeUITextViewsOf {
-            if value.value.isEmpty { ValuesToMakeUITextViewsOf.removeValue(forKey: value.key) }
+        for value in ValuesToMakeUIViewsOf {
+            if value.value.isEmpty { ValuesToMakeUIViewsOf.removeValue(forKey: value.key) }
         }
         
-//        "Title": self.title,
-//        "Description": self.description,
-//        "Publisher": self.publisher,
-//        "Published Date": self.publishedDate,
-//        "Page Count": self.numberOfPages
-//        createUITextViewValuesArray(key: <#T##String#>, valueToCheck: <#T##String#>, arrayToUpdate: <#T##[String : String]#>)
-
-        // Makes sure that the 'author' is in the right plural form
-//        if authors.count > 1 {
-//            values.updateValue(self.authors, forKey: "Authors")
-//        } else if authors.count == 1 {
-//            values.updateValue(self.authors, forKey: "Author")
-//        }
-        
-        
-//        // Counts the number of comma. 1 comma = 1 author.
-//        var numberOfCommas = 0
-//        for character in authors.characters { if character == "," { numberOfCommas += 1 } }
-//        
-//        // Removes the " ," at the start of the string if any authors were found.
-//        authors.characters.dropFirst(2)
-//        
-//        // Updates the 'ValuesToMakeUITextViewsOf' with the right plural form 
-//        if numberOfCommas > 1 { ValuesToMakeUITextViewsOf.updateValue(self.authors, forKey: "Authors") }
-//        else if numberOfCommas == 1 { ValuesToMakeUITextViewsOf.updateValue(self.authors, forKey: "Author") }
-//
-        
-        let authorString = cleanAndCreateString(pluralKey: "Authors", singularKeyForm: "Author", stringToIterate: self.authors)
-        
-        return ValuesToMakeUITextViewsOf
+        return ValuesToMakeUIViewsOf        
     }
 
     
-    
-    
-    
-    
-    
-
-    func cleanAndCreateString(pluralKey: String, singularKeyForm: String, stringToIterate: String) -> [String : String] {
+    func cleanAndCreateString(pluralKey: String, singularKeyForm: String, stringToIterate: String) -> (String, String) {
         var keyString: String = ""
         var valueString: String = ""
         
@@ -115,17 +113,14 @@ struct ConvenienceBook {
         valueString = String(stringToIterate.characters.dropFirst(2))
 
         if numberOfCommas > 1 {
-//            values.updateValue(self.authors, forKey: "Authors")
             keyString = pluralKey
         } else if numberOfCommas == 1 {
-//            values.updateValue(self.authors, forKey: "Author")
             keyString = singularKeyForm
         }
         
-        
-        return [keyString : valueString]
-    }
     
+        return (keyString, valueString)
+    }
     
     
 }

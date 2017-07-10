@@ -169,8 +169,8 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
                 }
             })
             print("Successfully signed/updated user into Firebase")
-//            self.performSegue(withIdentifier: "loginSegue", sender: self)
-            self.performSegue(withIdentifier: "lorteSegue", sender: self)
+            
+            self.performSegue(withIdentifier: "loginSegue", sender: self)
             
         }
     }

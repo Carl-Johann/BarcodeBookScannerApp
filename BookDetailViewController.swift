@@ -9,35 +9,21 @@
 import Foundation
 import UIKit
 import CoreData
+import Cosmos
 
 class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetchedResultsControllerDelegate {
     
     
-    let helveticaFont = UIFont(name: "HelveticaNeue", size: 18)
+    let helveticaFont = UIFont(name: "IowanOldStyle-Roman", size: 21)
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    
-    
+    var isLabelAtMaxHeight = false
     
     var bookShownInDetail: Book?
     var convenienceBook: ConvenienceBook?
-//    var descriptionText = ""
-//    var bookTitle = ""
-//    var publisherDate = ""
-//    var publisher = ""
-//    
-    
-    
     
     var scrollView = UIScrollView()
     var contentView = UIView()
-    var bookCoverImageView = UIImageView()
-    var bookTitleTextView = UITextView()
-    var bookPublisherTextView = UITextView()
-    var bookPublishedDateTextView = UITextView()
-    var bookDescriptionTextView = UITextView()
-    
-    var textViews : [UITextView] = []
-    var isLabelAtMaxHeight = false
+//    var bookCoverImageView = UIImageView()
     
     
     lazy var fetchedResultsController = { () -> NSFetchedResultsController<Book> in
@@ -53,66 +39,36 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetche
     
     
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Setup of the backbutton
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissViewController))
+        navigationItem.leftBarButtonItem = doneButton
+        self.title = "Detail Page"
+        
         // Checks if the 'fetchedResultsController' variable returns anything. Used for debugging
-        checkWithPredicate()
+        //checkWithPredicate()
+        guard (convenienceBook != nil) else { print("ConveninceBook is nil"); errorOccuredErrorAlert(); return }
+        guard (bookShownInDetail != nil) else { print("bookShownInDetail is nil"); errorOccuredErrorAlert(); return }
         
-        let valuesToMakeUITextViewsOf = convenienceBook?.getValuesToMakeUITextViewsOf()
-        
-        print("Values in values")
-        print(valuesToMakeUITextViewsOf!)
-        
-        for value in valuesToMakeUITextViewsOf! {
-            
-            
-            
+        // If there's a thumbnail available we setup the 'bookCoverImageView'
+        if convenienceBook!.isThumbnailAvailable || bookShownInDetail!.bookCoverAsData != nil {
+            print("Thumbnail is available")
+            setupBookCoverImageView()
         }
-        
-        
-        textViews = [
-            bookTitleTextView,
-            bookPublisherTextView,
-            bookPublishedDateTextView,
-            bookDescriptionTextView
-        ]
+        //
+        makeUIViewsFromConvenienceBook()
         
         // Make sure we are notified about the right book changing
         guard (bookShownInDetail != nil) else { print("Couldn't load detailView because 'bookShownInDetail' wasn't set before the view did load")
-            dismissViewController(); return
+            errorOccuredErrorAlert(); return
         }
         
         let predicate = NSPredicate(format: "isbn13 == %@", argumentArray: [bookShownInDetail!.isbn13])
         fetchedResultsController.fetchRequest.predicate = predicate
         
-        
-        // Setup of the backbutton
-        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.plain, target: self, action: #selector(dismissViewController))
-        navigationItem.leftBarButtonItem = backButton
-        
-        
-        //
-        //
-        //        // Setup of the scrollView
-        //        scrollView.frame = view.bounds
-        //        scrollView.backgroundColor = .white
-        //        scrollView.bounces = false
-        //        scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height + 1000)
-        //        view.addSubview(scrollView)
-        //
-        //        // Setup of the contentView
-        //        contentView.backgroundColor = .blue
-        //        scrollView.addSubview(contentView)
-        //
-        //        // Setup of the bookCoverImageView
-        //        bookCoverImageView.backgroundColor = .red
-        //        contentView.addSubview(bookCoverImageView)
-        //
         setupScrollAndContentView()
-        setupSubviews()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
@@ -128,163 +84,168 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetche
             print("moved an object")
         case .update:
             print("updated an object")
-            let imageFromNSData = UIImage(data: bookShownInDetail?.bookCoverAsData! as! Data)
-            self.bookCoverImageView.image = imageFromNSData
+            
+            for subview in contentView.subviews {
+                if let bookCoverImageView = subview as? UIImageView {
+                    let imageFromNSData = UIImage(data: bookShownInDetail!.bookCoverAsData! as! Data)
+                    bookCoverImageView.image = imageFromNSData
+                }
+            }
             
         }
-
     }
     
     
-    func setupScrollAndContentView() {
-        // Setup of the scrollView
-        scrollView.frame = view.bounds
-        scrollView.backgroundColor = .white
-        scrollView.bounces = false
-        scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height + 1000)
-        view.addSubview(scrollView)
+    func setupDescriptionTextView(key: String, value: String) {
         
-        // Setup of the contentView
-        scrollView.addSubview(contentView)
+        // Do any special setup
+        let bookDescriptionTextView = UITextView()
+        // We give the 'bookDescriptionTextView' a tag so we can locate it in our 'bookDescriptionReadMoreAndLessAction' method
+        bookDescriptionTextView.tag = 1
+        let bookDescriptionTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(bookDescriptionReadMoreAndLessAction))
+        bookDescriptionTextView.addGestureRecognizer(bookDescriptionTapGestureRecognizer)
+        bookDescriptionTextView.textContainer.maximumNumberOfLines = 2
+        bookDescriptionTextView.isScrollEnabled = false
+        bookDescriptionTextView.isSelectable = false
+        bookDescriptionTextView.textContainer.lineBreakMode = .byTruncatingTail
+        bookDescriptionTextView.isUserInteractionEnabled = true
+        bookDescriptionTextView.text = "\(key): \(value)"
+    }
+    
+    func setupRatingCosmosView(rating: Double) {
         
-        // Setup of the bookCoverImageView
-        bookCoverImageView.backgroundColor = .red
+        // RatingView
+        let ratingView = CosmosView()
+        ratingView.backgroundColor = .clear
+        ratingView.updateOnTouch = false
+        
+        ratingView.settings.filledColor = .yellow
+        ratingView.settings.filledBorderColor = .yellow
+        ratingView.settings.emptyColor = .clear
+        ratingView.settings.emptyBorderColor = .gray
+        
+        ratingView.settings.fillMode = .precise
+        ratingView.rating = rating
+    }
+    
+    func setupTextView(key: String, value: String) {
+        
+        let textView = UITextView()
+        textView.layer.borderColor = UIColor.gray.cgColor
+        textView.layer.backgroundColor = UIColor.lightGray.cgColor
+        textView.layer.borderWidth = 1.5
+        textView.textContainer.maximumNumberOfLines = 0
+        textView.text = "\(key): \(value)"
+        textView.isUserInteractionEnabled = false
+        textView.font = helveticaFont
+        contentView.addSubview(textView)
+    }
+    
+    func setupBookCoverImageView() {
+        
+        let bookCoverImageView = UIImageView()
         contentView.addSubview(bookCoverImageView)
-        
-        
     }
     
     
     func bookDescriptionReadMoreAndLessAction() {
-        let minX = bookDescriptionTextView.frame.minX
-        let minY = bookDescriptionTextView.frame.minY
-        let point = CGPoint(x: minX, y: minY)
         
-        let oldBookDescriptionTextViewHeight = bookDescriptionTextView.frame.height
-        
-        //
-        if isLabelAtMaxHeight {
-            isLabelAtMaxHeight = false
+        for subView in contentView.subviews {
+            if subView.tag == 1 {
+                let bookDescriptionTextView = subView as! UITextView
             
-            bookDescriptionTextView.textContainer.maximumNumberOfLines = 2
-            let bookDescriptionTextViewContentHeight = bookDescriptionTextView.sizeThatFits(bookDescriptionTextView.bounds.size).height
-            let size = CGSize(width: bookDescriptionTextView.frame.width, height: bookDescriptionTextViewContentHeight)
-            bookDescriptionTextView.frame = CGRect(origin: point, size: size)
-            
-            scrollView.contentSize = CGSize(width: view.frame.width, height: scrollView.contentSize.height - oldBookDescriptionTextViewHeight + bookDescriptionTextViewContentHeight)
-            contentView.frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height + 5)
-        }
-        else {
-            isLabelAtMaxHeight = true
-            
-            bookDescriptionTextView.textContainer.maximumNumberOfLines = 0
-            let bookDescriptionTextViewContentHeight = bookDescriptionTextView.sizeThatFits(bookDescriptionTextView.bounds.size).height
-            let size = CGSize(width: bookDescriptionTextView.frame.width, height: bookDescriptionTextViewContentHeight)
-            bookDescriptionTextView.frame = CGRect(origin: point, size: size)
-            
-            scrollView.contentSize = CGSize(width: view.frame.width, height: scrollView.contentSize.height + bookDescriptionTextViewContentHeight - oldBookDescriptionTextViewHeight)
-            contentView.frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height + 5)
-            
+                
+                let minX = bookDescriptionTextView.frame.minX
+                let minY = bookDescriptionTextView.frame.minY
+                let point = CGPoint(x: minX, y: minY)
+                
+                let oldBookDescriptionTextViewHeight = bookDescriptionTextView.frame.height
+                let bookDescriptionOriginY = bookDescriptionTextView.frame.origin.y
+                
+                var viewsToMove: [UIView] = []
+                
+                // Locates the views with a larger y value 'bookDescriptionTextView', beacuse that view will be under the
+                // 'bookDescriptionTextView' in the view, and should be moved accordingly to 'bookDescriptionTextView'
+                for view in contentView.subviews {
+                    if view.frame.origin.y > bookDescriptionOriginY { viewsToMove.append(view) }
+                }
+                //
+                if isLabelAtMaxHeight {
+                    isLabelAtMaxHeight = false
+                    
+                    bookDescriptionTextView.textContainer.maximumNumberOfLines = 2
+                    let bookDescriptionTextViewContent = bookDescriptionTextView.sizeThatFits(bookDescriptionTextView.bounds.size)
+                    let size = CGSize(width: bookDescriptionTextView.frame.width, height: bookDescriptionTextViewContent.height)
+                    bookDescriptionTextView.frame = CGRect(origin: point, size: size)
+                    
+                    
+                    //          Subtracts the correct y value to all views under the 'bookDescriptionTextView',
+                    //          which causes all the views to move up as the 'bookDescriptionTextView' is collapsed
+                    let yValueToSubtractFromView = oldBookDescriptionTextViewHeight - bookDescriptionTextViewContent.height
+                    
+                    for view in viewsToMove {
+                        var origin = view.frame.origin
+                        origin.y -= yValueToSubtractFromView
+                        view.frame = CGRect(origin: origin, size: view.bounds.size)
+                    }
+                    
+                    
+                    
+                    scrollView.contentSize = CGSize(width: view.frame.width, height: scrollView.contentSize.height - oldBookDescriptionTextViewHeight + bookDescriptionTextViewContent.height)
+                    
+                    contentView.frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height + 5)
+                }
+                else {
+                    isLabelAtMaxHeight = true
+                    
+                    bookDescriptionTextView.textContainer.maximumNumberOfLines = 0
+                    let bookDescriptionTextViewContentHeight = bookDescriptionTextView.sizeThatFits(bookDescriptionTextView.bounds.size).height
+                    let size = CGSize(width: bookDescriptionTextView.frame.width, height: bookDescriptionTextViewContentHeight)
+                    bookDescriptionTextView.frame = CGRect(origin: point, size: size)
+                    
+                    
+                    // Adds the correct y value to all views under the 'bookDescriptionTextView',
+                    // which causes all the views to move down as the 'bookDescriptionTextView' is extended
+                    let yValueToAddToView = bookDescriptionTextViewContentHeight - oldBookDescriptionTextViewHeight
+                    
+                    for view in viewsToMove {
+                        var origin = view.frame.origin
+                        origin.y += yValueToAddToView
+                        view.frame = CGRect(origin: origin, size: view.bounds.size)
+                    }
+                    
+                    
+                    scrollView.contentSize = CGSize(width: view.frame.width, height: scrollView.contentSize.height + bookDescriptionTextViewContentHeight - oldBookDescriptionTextViewHeight)
+                    contentView.frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height + 5)
+                    
+                    // The desired Y position for the 'bookDescriptionTextView'
+                    var yValueToScrollTo = bookDescriptionOriginY * 0.7
+                    
+                    // If the contentView past the 'bookDescriptionTextView' is not tall enough,
+                    // we set a 'maxScrollDistance' value to ensure we never scrool onto a big white spot under the 'contentView'
+                    let maxScrollDistance = contentView.frame.height - view.frame.height - 5
+                    
+                    // If the 'yValueToScrollTo' - wanted scroll distance - is larger than the allowed macScrollDistance,
+                    // we scroll to the default, safe value 'maxScrollDistance'
+                    yValueToScrollTo = min(yValueToScrollTo, maxScrollDistance)
+                    let pointToScrollTo = CGPoint(x: 0, y: yValueToScrollTo)
+                    
+                    scrollView.setContentOffset(pointToScrollTo, animated: true)
+                }
+            }
         }
     }
     
-    func checkWithPredicate() {
-    
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Book")
-        fetchRequest.sortDescriptors = [ ]
-        let predicatee = NSPredicate(format: "isbn13 == %@", argumentArray: [bookShownInDetail!.isbn13])
-        fetchRequest.predicate = predicatee
+        func errorOccuredErrorAlert() {
+        print("errorOccuredErrorAlert called")
+        let alert = UIAlertController(title: "Error", message: "An error occured. Try agian", preferredStyle: .alert)
         
-        let context = self.appDelegate.stack.context
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+            self.dismissViewController()
+        }))
         
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            print("Failed to initialize FetchedResultsController: \(error)")
-        }
-        
-        // Makes an annotation from all fetched objects
-        print(fetchedResultsController.fetchedObjects!)
-        
-        print()
-        print("did download fetchedObjects")
-        print()
-
-    
+        present(alert, animated: true, completion: nil)
     }
-    
-    //    func layOutViews() {
-    //        for textView in textViews {
-    //            // Setup of the textView
-    //            textView.backgroundColor = .yellow
-    //            textView.textContainer.maximumNumberOfLines = 0
-    //            textView.text = "textView xtViewt extVie wtextViewtex tViewtextV iewtex tViewtextVi ewtex  ewtextVi ewtextView ewtextView ewtextView ewtextView"
-    //            textView.isUserInteractionEnabled = false
-    //            textView.font = helveticaFont
-    //            contentView.addSubview(textView)
-    //        }
-    //
-    //        // Do any special setup
-    //        let bookDescriptionTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(bookDescriptionReadMoreAndLessAction))
-    //        bookDescriptionTextView.addGestureRecognizer(bookDescriptionTapGestureRecognizer)
-    //        bookDescriptionTextView.textContainer.maximumNumberOfLines = 2
-    //        bookDescriptionTextView.isScrollEnabled = false
-    //        bookDescriptionTextView.isSelectable = false
-    //        bookDescriptionTextView.textContainer.lineBreakMode = .byTruncatingTail
-    //        bookDescriptionTextView.isUserInteractionEnabled = true
-    //        bookDescriptionTextView.text = "textView xtViewt extVie wtextViewtex tViewtextV iewtex tViewtextVi ewtex  ewtextVi ewtextView ewtextView ewtextView ewtextView textView xtViewt extVie wtextViewtex tViewtextV iewtex tViewtextVi ewtex  ewtextVi ewtextView ewtextView ewtextView ewtextView textView xtViewt extVie wtextViewtex tViewtextV iewtex tViewtextVi ewtex  ewtextVi ewtextView ewtextView ewtextView ewtextView"
-    //
-    //    }
-    
-    
-    
-    
-    //    override func viewDidLayoutSubviews() {
-    //        super.viewDidLayoutSubviews()
-    //
-    //        // Constant values based on device screen size
-    //        let globalObjectWidth: CGFloat = view.frame.width * 0.9
-    //        let textViewPadding = UIEdgeInsetsMake(5, 5, 5, 5)
-    //        let bookCoverImageViewHeight = globalObjectWidth * 1.3
-    //
-    //
-    //        // Additional bookCoverImageView setup
-    //        var size = CGSize(width: globalObjectWidth, height: bookCoverImageViewHeight)
-    //        let topGap = (view.frame.width - size.width) / 2
-    //        var origin = CGPoint(x: view.frame.width * 0.05, y: topGap)
-    //
-    //        bookCoverImageView.frame = CGRect(origin: origin, size: size)
-    //        bookCoverImageView.layer.cornerRadius = 3
-    //        origin.y += bookCoverImageViewHeight
-    //
-    //
-    //        for textView in textViews {
-    //            // Sets the textView at the right height
-    //            origin.y += topGap * 0.8
-    //
-    //            // Calculates the height of the textView by making a view the fits inside of itself
-    //            let textViewContentSize = textView.sizeThatFits(textView.bounds.size)
-    //            size.height = textViewContentSize.height
-    //
-    //            // Sets up the different parameters
-    //            textView.frame = CGRect(origin: origin, size: size)
-    //            textView.textContainerInset = textViewPadding
-    //            textView.layer.cornerRadius = 3
-    //
-    //            // Adds the height of the textView to the shared value 'origin.y'
-    //            // so the next textView starts at the propper y value
-    //            origin.y += textView.frame.height
-    //        }
-    //
-    //        // After setting up all the textView sets up the 'contentSize' and 'contentView'
-    //        // so the whole viewController's length is dynamic based on lengths of the different textViews
-    //        scrollView.contentSize = CGSize(width: view.frame.width, height: origin.y + topGap)
-    //        contentView.frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height + 5)
-    //    }
-    
-    
-    
     
     func dismissViewController() {
         dismiss(animated: true, completion: nil)

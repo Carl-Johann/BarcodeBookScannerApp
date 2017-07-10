@@ -25,94 +25,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {//, GIDSignInDelegate {
         FirebaseApp.configure()
         
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
-        
-        
-//        GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/books")
-//        GIDSignIn.sharedInstance().delegate = self
-//        GIDSignIn.sharedInstance().signInSilently()
-        
+                
         return true
     
     }
-    
-//        if (GIDSignIn.sharedInstance().hasAuthInKeychain()) {
-//            print("Already signed into Google")
-//            logIntoFirebase(user: GIDSignIn.sharedInstance().currentUser)
-//            let sb = UIStoryboard(name: "Main", bundle: nil)
-//            if let BookShelfVC = sb.instantiateViewController(withIdentifier: "BookShelVCID") as? BookShelf {
-//                self.window?.rootViewController = BookShelfVC
-//            }
-//            
-//            //            let storyboard = UIStoryboard(name: "Main", bundle: nil);
-//            //            let viewController: BookShelf = storyboard.instantiateViewController(withIdentifier: "BookShelVCID") as! BookShelf
-//            //
-//            //            // Then push that view controller onto the navigation stack
-//            //            let rootViewController = self.window!.rootViewController as! UINavigationController;
-//            //            rootViewController.pushViewController(viewController, animated: true);
-//            
-//        }
-//        
-//        return true
-//    }
-//    
-//    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-//        if error != nil {
-//            print("Failed to log into Google", error)
-//            return
-//        }
-//        print("Successfully signed into Google")
-//        
-//        //        guard let idToken = user.authentication.idToken else { print("Couldn't get idToken from user"); return }
-//        //        guard let accessToken = user.authentication.accessToken else { print("Couldn't get 'accessToken' from user"); return }
-//        
-//        print(1)
-//        logIntoFirebase(user: user)
-//        
-//        
-//        //        DispatchQueue.global(qos: .background).async {
-//        //
-//        //
-//        //            let credentials = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
-//        //            Auth.auth().signIn(with: credentials) { (user, error) in
-//        //
-//        //                if error != nil {
-//        //                    print("Failed to sign into Firebase with Google")
-//        //                    return
-//        //                }
-//        //                print("Successfully signed into Firebase with Google")
-//        //
-//        //
-//        //           self.performSegue(withIdentifier: "LoginToCollectionView", sender: self)
-//        //            }
-//        //        }
-//    }
-//    
-//    func logIntoFirebase(user: GIDGoogleUser) {
-//        guard let idToken = user.authentication.idToken else { print("Couldn't get idToken from user"); return }
-//        guard let accessToken = user.authentication.accessToken else { print("Couldn't get 'accessToken' from user"); return }
-//        
-//        DispatchQueue.main.async {
-//            
-//            let credentials = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
-//            Auth.auth().signIn(with: credentials) { (user, error) in
-//                
-//                if error != nil {
-//                    print("Failed to sign into Firebase with Google")
-//                    return
-//                }
-//                print("Successfully signed into Firebase with Google")
-//                
-//                
-////            self.performSegue(withIdentifier: "LoginToCollectionView", sender: self)
-//            }
-//        }
-//        
-//        
-//    }
-    
-    
-    
-    
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         let handled = FBSDKApplicationDelegate.sharedInstance().application(app, open: url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as! String, annotation: options[UIApplicationOpenURLOptionsKey.sourceApplication])

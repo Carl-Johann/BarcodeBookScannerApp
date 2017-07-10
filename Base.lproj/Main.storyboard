@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.19" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AJW-Jk-BML">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AJW-Jk-BML">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.16"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,13 +24,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <segue destination="JF4-fa-JYX" kind="presentation" identifier="loginSegue" id="R83-6S-puG"/>
-                        <segue destination="jc1-Yr-Ynu" kind="presentation" identifier="lorteSegue" id="3Sz-n5-BFD"/>
+                        <segue destination="jc1-Yr-Ynu" kind="presentation" identifier="loginSegue" id="sbm-4h-2Yc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kho-c4-wah" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1761" y="37"/>
+            <point key="canvasLocation" x="-1610" y="54"/>
         </scene>
         <!--Page Scroll View Controller-->
         <scene sceneID="qsp-db-WqV">
@@ -40,25 +39,16 @@
                         <viewControllerLayoutGuide type="top" id="nkN-tb-Ds0"/>
                         <viewControllerLayoutGuide type="bottom" id="0zm-Zi-9Bp"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="mxD-vL-qkO" customClass="p">
+                    <view key="view" contentMode="scaleToFill" id="mxD-vL-qkO" userLabel="ScrollView" customClass="p">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" id="QLs-YP-KGf"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vC5-U3-bhM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1762" y="763"/>
-        </scene>
-        <!--Page View Controller-->
-        <scene sceneID="APe-Dl-e9W">
-            <objects>
-                <pageViewController restorationIdentifier="PageViewController" storyboardIdentifier="PageViewController" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="JF4-fa-JYX" customClass="PageViewController" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                </pageViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="NSP-bX-rek" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-895" y="35"/>
+            <point key="canvasLocation" x="-892" y="54"/>
         </scene>
         <!--Book Shelf-->
         <scene sceneID="JXz-75-D1l">
@@ -73,7 +63,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9nD-bm-J9f">
-                                <rect key="frame" x="-0.5" y="-0.5" width="375" height="667"/>
+                                <rect key="frame" x="-1" y="-1" width="376" height="668"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VTM-xr-1Xl">
                                     <size key="itemSize" width="100" height="135"/>

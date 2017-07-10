@@ -67,7 +67,7 @@ class PageScrollViewController: UIViewController, UIScrollViewDelegate {
         pageControl.currentPageIndicatorTintColor = .white
         pageControl.pageIndicatorTintColor = .darkGray
         pageControl.currentPage = 0
-        pageControl.alpha = 0.5
+        pageControl.alpha = 0.3
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(pageControl)
         
