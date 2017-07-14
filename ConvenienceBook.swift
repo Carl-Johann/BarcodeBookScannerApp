@@ -14,9 +14,13 @@ struct ConvenienceBook {
     
     var isThumbnailAvailable: Bool = false
     
+    var smallestThumbnail: UIImage?
+    var largestThumbnail: UIImage?
+    
     var title = ""
     var isbn13 = ""
     var isbn10 = ""
+    var bookID = ""
     
     var smallThumbnail = ""
     var thumbnail = ""
@@ -35,8 +39,8 @@ struct ConvenienceBook {
     var rating = ""
     
     
-    func getAllValues() -> [String : String] {
-        let values: [String : String] = [
+    func getAllNonEmptyValues() -> [String : String] {
+        var values: [String : String] = [
             "title": self.title,
             "isbn13": self.isbn13,
             "isbn10": self.isbn10,
@@ -49,16 +53,20 @@ struct ConvenienceBook {
             "numberOfPages": self.numberOfPages,
             "mainCategory": self.mainCategory,
             "categories": self.categories,
-            "rating": self.rating
+            "rating": self.rating,
+            "bookID": self.bookID
         ]
+        
+        for value in values {
+            if value.value.isEmpty { values.removeValue(forKey: value.key) }
+        }
         
         return values
     }
     
-    func getBiggestThumbnail() -> String {
+    private func getThumbnails() -> [String : String] {
         
-        // Ordered by size. Last is the largest
-        var thumbnails: [String : String] = [
+        let thumbnails: [String : String] = [
             "smallThumbnail": self.smallThumbnail,
             "thumbnail": self.thumbnail,
             "thumbnailIsSmall": self.thumbnailIsSmall,
@@ -67,12 +75,34 @@ struct ConvenienceBook {
             "extraLargeThumbnail": self.extraLargeThumbnail
         ]
         
+        return thumbnails
+    }
+    
+    
+    func getBiggestThumbnail() -> String {
+        
+        var thumbnails: [String : String] = getThumbnails()
         for thumbnailValue in thumbnails { if thumbnailValue.value.isEmpty { thumbnails.removeValue(forKey: thumbnailValue.key) } }
+        
         // Returns the last value, which is the largest image.
         var largestThumbnail = ""
         if !(thumbnails.isEmpty) { largestThumbnail = thumbnails.values.reversed().first! }
         return largestThumbnail
     }
+    
+    
+    func getSmallestThumbnail() -> String{
+        
+        var thumbnails: [String : String] = getThumbnails()
+        
+        for thumbnailValue in thumbnails { if thumbnailValue.value.isEmpty { thumbnails.removeValue(forKey: thumbnailValue.key) } }
+        // Returns the first value, which is the smallest image.
+        var smallestThumbnail = ""
+        if !(thumbnails.isEmpty) { smallestThumbnail = thumbnails.values.first! }
+        return smallestThumbnail
+        
+    }
+    
     
     func getValuesToMakeUIViewsOf() -> [String : String]{
         
@@ -97,9 +127,9 @@ struct ConvenienceBook {
             if value.value.isEmpty { ValuesToMakeUIViewsOf.removeValue(forKey: value.key) }
         }
         
-        return ValuesToMakeUIViewsOf        
+        return ValuesToMakeUIViewsOf
     }
-
+    
     
     func cleanAndCreateString(pluralKey: String, singularKeyForm: String, stringToIterate: String) -> (String, String) {
         var keyString: String = ""
@@ -111,14 +141,14 @@ struct ConvenienceBook {
         
         // Removes the " ," at the start of the string if any authors were found.
         valueString = String(stringToIterate.characters.dropFirst(2))
-
+        
         if numberOfCommas > 1 {
             keyString = pluralKey
         } else if numberOfCommas == 1 {
             keyString = singularKeyForm
         }
         
-    
+        
         return (keyString, valueString)
     }
     

@@ -27,7 +27,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         setupGoogleButtoms()
         
     }
-   
+    
     
     fileprivate func setupFBLoginButtons() {
         
@@ -49,13 +49,13 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         customFBButton.addTarget(self, action: #selector(customFBButtonAction), for: .touchUpInside)
         
         view.addSubview(customFBButton)
-
+        
     }
     
-  
+    
     
     fileprivate func setupGoogleButtoms() {
-    
+        
         // Creating the Google signin button
         let googleButton = GIDSignInButton()
         googleButton.frame = CGRect(x: 16, y: 116 + 66, width: view.frame.width - 32, height: 50)
@@ -77,19 +77,19 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         
     }
     
-  
+    
     
     
     
     
     func customGoogleButtonAction(_ sender: UIButton) {
-       GIDSignIn.sharedInstance().signOut()
+        GIDSignIn.sharedInstance().signOut()
     }
     
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
         print("Did log out")
     }
-
+    
     
     
     func customFBButtonAction() {
@@ -126,13 +126,13 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
             print("Succesfully signed in to Firebase with credentials", user?.uid)
         }
         
-//        FBSDKGraphRequest(graphPath: "/me", parameters: ["fields": "id, email, name"]).start { (connection, result, error) in
-//            if error != nil { print("Failed to start graph request \(error!)"); return
-//            }
-//            
-//            print(result!)
-//            
-//        }
+        //        FBSDKGraphRequest(graphPath: "/me", parameters: ["fields": "id, email, name"]).start { (connection, result, error) in
+        //            if error != nil { print("Failed to start graph request \(error!)"); return
+        //            }
+        //
+        //            print(result!)
+        //
+        //        }
     }
     
     
@@ -174,5 +174,5 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
             
         }
     }
-  
+    
 }

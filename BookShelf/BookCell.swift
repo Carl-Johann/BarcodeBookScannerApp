@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-class BookCell: UICollectionViewCell {
-    
+class BookCell: UICollectionViewCell {    
     @IBOutlet weak var bookCoverImage: UIImageView!
-    @IBOutlet weak var bookTitle: UILabel!
-                
+    @IBOutlet weak var bookTitle: UITextView!
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    var associatedConvenienceBook: ConvenienceBook?
 }

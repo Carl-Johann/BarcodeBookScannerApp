@@ -8,36 +8,27 @@
 
 import Foundation
 import UIKit
-import CoreData
 import Cosmos
 
-class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetchedResultsControllerDelegate {
+class BookDetailViewController: UIViewController, UIScrollViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     
-    let helveticaFont = UIFont(name: "IowanOldStyle-Roman", size: 21)
+    let cellID = "cellID"
+    var titles: [String] = []
+    
+    let font = UIFont(name: "TimesNewRomanPSMT", size: 21)
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var isLabelAtMaxHeight = false
     
-    var bookShownInDetail: Book?
     var convenienceBook: ConvenienceBook?
     
+    var postButton: UIBarButtonItem!
+    var addToBookshelf: UICollectionView!
     var scrollView = UIScrollView()
     var contentView = UIView()
-//    var bookCoverImageView = UIImageView()
     
-    
-    lazy var fetchedResultsController = { () -> NSFetchedResultsController<Book> in
-        
-        let fetchRequest = NSFetchRequest<Book>(entityName: "Book")
-        fetchRequest.sortDescriptors = []
-        
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.appDelegate.stack.context, sectionNameKeyPath: nil, cacheName: nil)
-        fetchedResultsController.delegate = self
-        
-        return fetchedResultsController
-    }()
-    
-    
+    // få brugerens reoler og add dem til tiles
+    // tilføj den skannede bog til 'eBooks' i baggrunden når view er loaded
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,105 +38,48 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetche
         navigationItem.leftBarButtonItem = doneButton
         self.title = "Detail Page"
         
-        // Checks if the 'fetchedResultsController' variable returns anything. Used for debugging
-        //checkWithPredicate()
+        // Setup of the add button
+        postButton = UIBarButtonItem(image: UIImage(named: "AddToCloudIcon"), style: .plain , target: self, action: #selector(postSelectedBookshelfOptions))
+        
+        
         guard (convenienceBook != nil) else { print("ConveninceBook is nil"); errorOccuredErrorAlert(); return }
-        guard (bookShownInDetail != nil) else { print("bookShownInDetail is nil"); errorOccuredErrorAlert(); return }
         
         // If there's a thumbnail available we setup the 'bookCoverImageView'
-        if convenienceBook!.isThumbnailAvailable || bookShownInDetail!.bookCoverAsData != nil {
-            print("Thumbnail is available")
-            setupBookCoverImageView()
-        }
-        //
+        if convenienceBook!.isThumbnailAvailable { setupBookCoverImageView() }
+        
+        // Make UIViews from convenienceBook
         makeUIViewsFromConvenienceBook()
         
-        // Make sure we are notified about the right book changing
-        guard (bookShownInDetail != nil) else { print("Couldn't load detailView because 'bookShownInDetail' wasn't set before the view did load")
-            errorOccuredErrorAlert(); return
-        }
+        // Setup of the addToBookshelf collectionView
+        setupAddToBookshelfCV()
         
-        let predicate = NSPredicate(format: "isbn13 == %@", argumentArray: [bookShownInDetail!.isbn13])
-        fetchedResultsController.fetchRequest.predicate = predicate
+        // Setup of the scrollView and ContentView
+        setupScrollAndContentView()        
         
-        setupScrollAndContentView()
-    }
+    }            
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-                    didChange anObject: Any, at indexPath: IndexPath?,
-                    for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
-        switch type {
-        case .delete:
-            print("deleted an object")
-        case .insert:
-            print("inserted an object")
-        case .move:
-            print("moved an object")
-        case .update:
-            print("updated an object")
-            
-            for subview in contentView.subviews {
-                if let bookCoverImageView = subview as? UIImageView {
-                    let imageFromNSData = UIImage(data: bookShownInDetail!.bookCoverAsData! as! Data)
-                    bookCoverImageView.image = imageFromNSData
-                }
-            }
-            
+    
+    
+    func postSelectedBookshelfOptions() {
+        for indexpath in addToBookshelf.indexPathsForSelectedItems! {
+            print("Post book to bookshelf: \(titles[indexpath[1]])")
+            print("convenienceBook id:", convenienceBook!.bookID)
+            GoogleBooksClient.sharedInstance.postToBookshelf(BookshelfID: indexpath[1], bookID: convenienceBook!.bookID, add: true)
         }
     }
     
     
-    func setupDescriptionTextView(key: String, value: String) {
+    
+    
+    
+    func itemSize() -> CGSize {
+        let globalObjectWidth: CGFloat = (view.frame.width * 0.9)
+        let numberOfItemsPerRow: CGFloat = 4.0
+        let itemSize = (globalObjectWidth/numberOfItemsPerRow) - 3
         
-        // Do any special setup
-        let bookDescriptionTextView = UITextView()
-        // We give the 'bookDescriptionTextView' a tag so we can locate it in our 'bookDescriptionReadMoreAndLessAction' method
-        bookDescriptionTextView.tag = 1
-        let bookDescriptionTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(bookDescriptionReadMoreAndLessAction))
-        bookDescriptionTextView.addGestureRecognizer(bookDescriptionTapGestureRecognizer)
-        bookDescriptionTextView.textContainer.maximumNumberOfLines = 2
-        bookDescriptionTextView.isScrollEnabled = false
-        bookDescriptionTextView.isSelectable = false
-        bookDescriptionTextView.textContainer.lineBreakMode = .byTruncatingTail
-        bookDescriptionTextView.isUserInteractionEnabled = true
-        bookDescriptionTextView.text = "\(key): \(value)"
+        return CGSize(width: itemSize, height: itemSize)
     }
     
-    func setupRatingCosmosView(rating: Double) {
-        
-        // RatingView
-        let ratingView = CosmosView()
-        ratingView.backgroundColor = .clear
-        ratingView.updateOnTouch = false
-        
-        ratingView.settings.filledColor = .yellow
-        ratingView.settings.filledBorderColor = .yellow
-        ratingView.settings.emptyColor = .clear
-        ratingView.settings.emptyBorderColor = .gray
-        
-        ratingView.settings.fillMode = .precise
-        ratingView.rating = rating
-    }
-    
-    func setupTextView(key: String, value: String) {
-        
-        let textView = UITextView()
-        textView.layer.borderColor = UIColor.gray.cgColor
-        textView.layer.backgroundColor = UIColor.lightGray.cgColor
-        textView.layer.borderWidth = 1.5
-        textView.textContainer.maximumNumberOfLines = 0
-        textView.text = "\(key): \(value)"
-        textView.isUserInteractionEnabled = false
-        textView.font = helveticaFont
-        contentView.addSubview(textView)
-    }
-    
-    func setupBookCoverImageView() {
-        
-        let bookCoverImageView = UIImageView()
-        contentView.addSubview(bookCoverImageView)
-    }
     
     
     func bookDescriptionReadMoreAndLessAction() {
@@ -153,7 +87,7 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetche
         for subView in contentView.subviews {
             if subView.tag == 1 {
                 let bookDescriptionTextView = subView as! UITextView
-            
+                
                 
                 let minX = bookDescriptionTextView.frame.minX
                 let minY = bookDescriptionTextView.frame.minY
@@ -169,6 +103,7 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetche
                 for view in contentView.subviews {
                     if view.frame.origin.y > bookDescriptionOriginY { viewsToMove.append(view) }
                 }
+                
                 //
                 if isLabelAtMaxHeight {
                     isLabelAtMaxHeight = false
@@ -179,8 +114,8 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetche
                     bookDescriptionTextView.frame = CGRect(origin: point, size: size)
                     
                     
-                    //          Subtracts the correct y value to all views under the 'bookDescriptionTextView',
-                    //          which causes all the views to move up as the 'bookDescriptionTextView' is collapsed
+                    // Subtracts the correct y value to all views under the 'bookDescriptionTextView',
+                    // which causes all the views to move up as the 'bookDescriptionTextView' is collapsed
                     let yValueToSubtractFromView = oldBookDescriptionTextViewHeight - bookDescriptionTextViewContent.height
                     
                     for view in viewsToMove {
@@ -236,7 +171,9 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, NSFetche
         }
     }
     
-        func errorOccuredErrorAlert() {
+    
+    
+    func errorOccuredErrorAlert() {
         print("errorOccuredErrorAlert called")
         let alert = UIAlertController(title: "Error", message: "An error occured. Try agian", preferredStyle: .alert)
         

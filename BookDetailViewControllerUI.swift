@@ -27,6 +27,8 @@ extension BookDetailViewController {
         return newImage
     }
     
+    
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -43,32 +45,40 @@ extension BookDetailViewController {
         
         
         
-        
-        
         for subView in contentView.subviews {
             if let bookCoverImageView = subView as? UIImageView {
+                let biggestThumbnail = convenienceBook!.getBiggestThumbnail()
                 
-                if let bookCoverImage = bookShownInDetail!.bookCoverAsData {
-                    // Gives the image the right size based in the 'globalObjectWidth'
-                    let coverImage = UIImage(data: bookCoverImage as! Data)
-                    let resizedCoverImage = resizeImage(image: coverImage!, newWidth: globalObjectWidth)
+                
+                if let largestThumbnail = convenienceBook?.largestThumbnail {
+                    
+                    // Gives the image the right size based on the 'globalObjectWidth'
+                    let resizedCoverImage = resizeImage(image: largestThumbnail, newWidth: globalObjectWidth)
                     bookCoverImageView.image = resizedCoverImage
-                    
                     bookCoverImageView.frame = CGRect(origin: origin, size: (resizedCoverImage?.size)!)
-                    // Makes it look right,
-                    bookCoverImageView.layer.cornerRadius = 3
-                    bookCoverImageView.layer.masksToBounds = true
-                    // and makes the next view sit in the right spot
-                    bookCoverImageViewHeight = bookCoverImageView.frame.height
-                    origin.y += bookCoverImageViewHeight
+                } else if !(biggestThumbnail.isEmpty) {
                     
-                } else if convenienceBook!.isThumbnailAvailable {
-                    let biggestThumbnailURL = convenienceBook!.getBiggestThumbnail()
-                    // Updating the Book will in return notify the 'fetchedResultsController' which will update the view
-                    imageFromURL(book: bookShownInDetail!, urlString: biggestThumbnailURL)
+                    let url = URL(string: biggestThumbnail)
+                    let data = try? Data(contentsOf: url!)
+                    let imageFromURL = UIImage(data: data!)
                     
+                    // Gives the image the right size based on the 'globalObjectWidth'
+                    let resizedCoverImage = resizeImage(image: imageFromURL!, newWidth: globalObjectWidth)
+                    bookCoverImageView.image = resizedCoverImage
+                    bookCoverImageView.frame = CGRect(origin: origin, size: (resizedCoverImage?.size)!)
                     
                 }
+                
+                
+                // Makes it look right,
+                bookCoverImageView.layer.cornerRadius = 3
+                bookCoverImageView.layer.masksToBounds = true
+                // and makes the next view sit in the right spot
+                bookCoverImageViewHeight = bookCoverImageView.frame.height
+                origin.y += bookCoverImageViewHeight
+                
+                // Download resten af den scannede bog, og vis den. KILL IT!!!!!
+                
             } else if let textField = subView as? UITextView {
                 
                 // Sets the textView at the right height
@@ -108,7 +118,20 @@ extension BookDetailViewController {
                 ratingView.layer.cornerRadius = 3
                 origin.y += ratingView.frame.height
                 
+            } else if let addToBookshelf = subView as? UICollectionView {                
+                origin.y += topGap * 0.55
+                
+                size.height = addToBookshelf.collectionViewLayout.collectionViewContentSize.height
+                addToBookshelf.frame = CGRect(origin: origin, size: size)
+                addToBookshelf.layer.cornerRadius = 3
+                
+                // We need to reload the bookshelf, else the cells
+                // aren't adjusted to the width of the addToBookshelf.frame.width
+                addToBookshelf.reloadData()
+                
+                origin.y += addToBookshelf.frame.height
             }
+            
         }
         
         
@@ -118,20 +141,9 @@ extension BookDetailViewController {
         contentView.frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height + 5)
     }
     
-    func setupScrollAndContentView() {
-        // Setup of the scrollView
-        scrollView.frame = view.bounds
-        scrollView.backgroundColor = .darkGray
-        scrollView.bounces = false
-        scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height + 1000)
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        
-    }
     
     
-    func imageFromURL(book: Book, urlString: String) {
-        print("imageFromURL was called")
+    func imageFromURL(urlString: String) {
         // The contents of the url are retrieved on a concurrent que to avoid errors with 'backthreading'
         let concurrentQueue = DispatchQueue(label: "queuename", attributes: .concurrent)
         concurrentQueue.sync {
@@ -140,37 +152,14 @@ extension BookDetailViewController {
             let data = try? Data(contentsOf: url!)
             let imageFromURL = UIImage(data: data!)
             
-            book.bookCoverAsData = UIImagePNGRepresentation(imageFromURL!) as NSData?
+            convenienceBook!.isThumbnailAvailable = true
+            convenienceBook!.largestThumbnail = imageFromURL
             
-            do { try self.appDelegate.stack.saveContext() }
-            catch { print("ERROR: \(error)") }
-            
-        }
-    }
-    
-    
-    
-    func makeUIViewsFromConvenienceBook() {
-        let valuesToMakeUIViewsOf = convenienceBook!.getValuesToMakeUIViewsOf()
-        
-        for value in valuesToMakeUIViewsOf {
-            switch value.key {
-                
-            case "Rating":
-                setupRatingCosmosView(rating: Double(value.value)!)
-                
-            case "Page Count":
-                //                setupPageCountTextView(key: value.key, value: value.value)
-                setupTextView(key: value.key, value: value.value)
-                
-            case "Description":
-                setupDescriptionTextView(key: value.key, value: value.value)
-                
-            default:
-                setupTextView(key: value.key, value: value.value)
-                
+            for subview in contentView.subviews {
+                if let bookCoverImageView = subview as? UIImageView {
+                    bookCoverImageView.image = imageFromURL
+                }
             }
         }
     }
-    
 }

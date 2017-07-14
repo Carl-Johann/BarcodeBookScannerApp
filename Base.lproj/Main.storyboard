@@ -48,12 +48,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vC5-U3-bhM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-892" y="54"/>
+            <point key="canvasLocation" x="-852" y="54"/>
         </scene>
-        <!--Book Shelf-->
+        <!--Book ShelfCV-->
         <scene sceneID="JXz-75-D1l">
             <objects>
-                <viewController restorationIdentifier="BookShelfVC" storyboardIdentifier="BookShelfVC" id="7Dz-1f-9rm" customClass="BookShelf" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController restorationIdentifier="BookShelfVC" storyboardIdentifier="BookShelfVC" id="7Dz-1f-9rm" customClass="BookShelfCV" customModule="BarcodeBookScanner" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="TtI-qt-XN7"/>
                         <viewControllerLayoutGuide type="bottom" id="kS3-O0-u6K"/>
@@ -63,7 +63,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9nD-bm-J9f">
-                                <rect key="frame" x="-1" y="-1" width="376" height="668"/>
+                                <rect key="frame" x="-0.5" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VTM-xr-1Xl">
                                     <size key="itemSize" width="100" height="135"/>
@@ -72,7 +72,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="BookCellID" id="vbi-eT-Wjs" customClass="BookCell" customModule="BarcodeBookScanner" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="BookCell" id="vbi-eT-Wjs" customClass="BookCell" customModule="BarcodeBookScanner" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="100" height="135"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -82,29 +82,44 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="f6V-W5-PrA">
                                                     <rect key="frame" x="0.0" y="0.0" width="100" height="108"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydJ-lq-nkn">
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="oph-eM-QmP">
+                                                    <rect key="frame" x="40" y="44" width="20" height="20"/>
+                                                </activityIndicatorView>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yzy-Cs-lYm">
                                                     <rect key="frame" x="0.0" y="108" width="100" height="27"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <accessibility key="accessibilityConfiguration">
+                                                        <accessibilityTraits key="traits" notEnabled="YES"/>
+                                                    </accessibility>
+                                                    <attributedString key="attributedText">
+                                                        <fragment content="BOOK TITLE">
+                                                            <attributes>
+                                                                <font key="NSFont" metaFont="system" size="14"/>
+                                                            </attributes>
+                                                        </fragment>
+                                                    </attributedString>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                </textView>
                                             </subviews>
                                         </view>
                                         <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="ydJ-lq-nkn" secondAttribute="bottom" id="AHR-HD-fpS"/>
-                                            <constraint firstItem="ydJ-lq-nkn" firstAttribute="width" secondItem="vbi-eT-Wjs" secondAttribute="width" id="I9j-VL-pOd"/>
+                                            <constraint firstItem="oph-eM-QmP" firstAttribute="centerX" secondItem="f6V-W5-PrA" secondAttribute="centerX" id="CWG-94-6b5"/>
+                                            <constraint firstItem="Yzy-Cs-lYm" firstAttribute="leading" secondItem="vbi-eT-Wjs" secondAttribute="leading" id="HcW-he-wQw"/>
                                             <constraint firstItem="f6V-W5-PrA" firstAttribute="leading" secondItem="vbi-eT-Wjs" secondAttribute="leading" id="Jeb-Pq-j8N"/>
                                             <constraint firstItem="f6V-W5-PrA" firstAttribute="top" secondItem="vbi-eT-Wjs" secondAttribute="top" id="Krn-30-fCz"/>
                                             <constraint firstItem="f6V-W5-PrA" firstAttribute="height" secondItem="vbi-eT-Wjs" secondAttribute="height" multiplier="0.8" id="RWh-T8-SNV"/>
-                                            <constraint firstItem="ydJ-lq-nkn" firstAttribute="leading" secondItem="vbi-eT-Wjs" secondAttribute="leading" id="Vz3-Sl-TgM"/>
-                                            <constraint firstItem="ydJ-lq-nkn" firstAttribute="height" secondItem="vbi-eT-Wjs" secondAttribute="height" multiplier="0.2" id="bMB-ec-Vab"/>
+                                            <constraint firstItem="Yzy-Cs-lYm" firstAttribute="height" secondItem="vbi-eT-Wjs" secondAttribute="height" multiplier="0.2" id="Wvo-8B-XYL"/>
                                             <constraint firstItem="f6V-W5-PrA" firstAttribute="width" secondItem="vbi-eT-Wjs" secondAttribute="width" id="d7i-MO-caR"/>
-                                            <constraint firstAttribute="trailing" secondItem="ydJ-lq-nkn" secondAttribute="trailing" id="rV8-JX-NsM"/>
+                                            <constraint firstItem="oph-eM-QmP" firstAttribute="centerY" secondItem="f6V-W5-PrA" secondAttribute="centerY" id="nzy-QL-D9Y"/>
+                                            <constraint firstAttribute="bottom" secondItem="Yzy-Cs-lYm" secondAttribute="bottom" id="rzj-u2-SfF"/>
+                                            <constraint firstAttribute="trailing" secondItem="Yzy-Cs-lYm" secondAttribute="trailing" id="sWK-Km-oDL"/>
                                             <constraint firstAttribute="trailing" secondItem="f6V-W5-PrA" secondAttribute="trailing" id="tpe-5R-jnK"/>
+                                            <constraint firstItem="Yzy-Cs-lYm" firstAttribute="width" secondItem="vbi-eT-Wjs" secondAttribute="width" id="usG-Jc-Kl7"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="bookCoverImage" destination="f6V-W5-PrA" id="Z2f-a2-Btf"/>
-                                            <outlet property="bookTitle" destination="ydJ-lq-nkn" id="h9x-Vf-3AD"/>
+                                            <outlet property="bookTitle" destination="Yzy-Cs-lYm" id="KwI-3J-jDJ"/>
+                                            <outlet property="loadingIndicator" destination="oph-eM-QmP" id="Ma4-z0-hL3"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -116,9 +131,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="9nD-bm-J9f" firstAttribute="centerY" secondItem="BZX-Mv-hPX" secondAttribute="centerY" id="GBo-mu-o05"/>
+                            <constraint firstItem="9nD-bm-J9f" firstAttribute="centerY" secondItem="BZX-Mv-hPX" secondAttribute="centerY" constant="32" id="GBo-mu-o05"/>
                             <constraint firstItem="9nD-bm-J9f" firstAttribute="width" secondItem="BZX-Mv-hPX" secondAttribute="width" id="IKC-29-kzs"/>
-                            <constraint firstItem="9nD-bm-J9f" firstAttribute="height" secondItem="BZX-Mv-hPX" secondAttribute="height" id="TS9-LX-Zgs"/>
+                            <constraint firstItem="9nD-bm-J9f" firstAttribute="top" secondItem="BZX-Mv-hPX" secondAttribute="top" constant="64" id="bDe-3E-a89"/>
                             <constraint firstItem="9nD-bm-J9f" firstAttribute="centerX" secondItem="BZX-Mv-hPX" secondAttribute="centerX" id="qKc-gD-CEH"/>
                         </constraints>
                     </view>
@@ -129,7 +144,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BJ0-IO-YmE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-106" y="-315"/>
+            <point key="canvasLocation" x="-106.40000000000001" y="-287.40629685157421"/>
         </scene>
         <!--Barcode Scanner View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -148,7 +163,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-106" y="355"/>
+            <point key="canvasLocation" x="-106" y="433"/>
         </scene>
     </scenes>
 </document>

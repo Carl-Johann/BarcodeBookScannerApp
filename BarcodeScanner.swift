@@ -13,9 +13,6 @@ import FirebaseAuth
 import CoreData
 
 extension BarcodeScannerViewController {
-        
-    //    var session: AVCaptureSession!
-    //    var previewLayer: AVCaptureVideoPreviewLayer!
     
     func setupCamera() {
         
@@ -64,7 +61,7 @@ extension BarcodeScannerViewController {
             print("Couldn't add output")
         }
         
-    
+        
     }
     
     
@@ -84,7 +81,7 @@ extension BarcodeScannerViewController {
             
             // Avoid a very buzzy device.
             session.removeOutput(session.outputs.first as! AVCaptureOutput)
-            //session.stopRunning()
+            
             
             
         }
@@ -97,8 +94,7 @@ extension BarcodeScannerViewController {
         
         // trimming the detected code
         guard let trimmedCode = Int(code.trimmingCharacters(in: NSCharacterSet.whitespaces)) else {
-            print("Trimming of scanned code failed")
-            return
+            print("Trimming of scanned code failed"); return
         }
         
         // making an API call with the retrived code
@@ -114,13 +110,15 @@ extension BarcodeScannerViewController {
                 guard let items = data["items"] as? [[String : AnyObject]] else { print("Couldn't access 'items' in data");
                     self.errorOccuredErrorAlert(); return }
                 print(items)
-                var convenienceBook = self.getInformationFromScannedBook(items: items)
+                
+                
+                var convenienceBook = GoogleBooksClient.sharedInstance.getConvenienceBookFromScannedBook(items: items)
                 self.updateChildValues(convenienceBook: convenienceBook)
                 guard let firebaseUserUID = Auth.auth().currentUser?.uid else { print("Current Firebase user UID == nil"); return }
                 
                 
+                
                 let bookDetailVC = BookDetailViewController()
-                bookDetailVC.convenienceBook = convenienceBook
                 
                 
                 
@@ -128,53 +126,62 @@ extension BarcodeScannerViewController {
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Book")
                 let predicate = NSPredicate(format: "isbn13 == %@", argumentArray: [convenienceBook.isbn13])
                 fetchRequest.predicate = predicate
-//                fetchRequest.fetchLimit = 1
                 let fetchResults = try! self.appDelegate.stack.context.fetch(fetchRequest) as? [Book]
-            
+                
                 // Checls if the book has been scanned before
                 if fetchResults!.count == 0 {
                     print("Book hadn't been scanned before, creating Book instance in CoreData")
+                    
+                    
                     // Create Book managedObject and assign values accordingly
                     let bookFromBarcode = Book(context: self.appDelegate.stack.context)
                     bookFromBarcode.bookTitle = convenienceBook.title
                     bookFromBarcode.firebaseUID = firebaseUserUID
                     
                     
-                    bookFromBarcode.isbn13 = Int64(convenienceBook.isbn13)!// as! Int16
+                    bookFromBarcode.isbn13 = Int64(convenienceBook.isbn13)!//
                     
                     
                     do { try self.appDelegate.stack.saveContext()
                     } catch { print("An error occured trying to save core data, after creating book") }
                     
+                    
+                    
+                    
+                    
                     let thumbnailToDownload = convenienceBook.getBiggestThumbnail()
                     if !(thumbnailToDownload.isEmpty) {
                         print("Thumbnail to download is not empty")
-                        DispatchQueue.main.async {
-                            self.imageFromURL(book: bookFromBarcode, urlString: thumbnailToDownload)
+                        
+                        
+                        // The contents of the url are retrieved on a concurrent que to avoid errors with 'backthreading'
+                        let concurrentQueue = DispatchQueue(label: "queuename", attributes: .concurrent)
+                        concurrentQueue.sync {
+                            
+                            let url = URL(string: thumbnailToDownload)
+                            let data = try? Data(contentsOf: url!)
+                            let imageFromURL = UIImage(data: data!)
+                            
+                            convenienceBook.largestThumbnail = imageFromURL
+                            convenienceBook.isThumbnailAvailable = true
+                            bookFromBarcode.bookCoverAsData = UIImagePNGRepresentation(imageFromURL!) as NSData?
+                            
+                            do { try self.appDelegate.stack.saveContext() }
+                            catch { print("ERROR: \(error)") }
+                            
+                            
                         }
-                        convenienceBook.isThumbnailAvailable = true
                     }
-                    
-                    bookDetailVC.bookShownInDetail = bookFromBarcode
-                    
-                    
-                    
-                    // The book has been scanned already
-                } else if fetchResults!.count == 1 {
-                    print("Book was already scanned")
-                    
-                    let alreadyScannedBook = fetchResults?.first
-                    bookDetailVC.bookShownInDetail = alreadyScannedBook
                     
                 }
                 
-                
+                bookDetailVC.convenienceBook = convenienceBook
                 let bookDetailVCNavigationController: UINavigationController = UINavigationController(rootViewController: bookDetailVC)
                 self.present(bookDetailVCNavigationController, animated: true, completion: nil)
             }
         }
     }
-
+    
     
     func imageFromURL(book: Book, urlString: String) {
         print("imageFromURL was called")
@@ -186,17 +193,19 @@ extension BarcodeScannerViewController {
             let data = try? Data(contentsOf: url!)
             let imageFromURL = UIImage(data: data!)
             
+            
             book.bookCoverAsData = UIImagePNGRepresentation(imageFromURL!) as NSData?
             
             do { try self.appDelegate.stack.saveContext() }
             catch { print("ERROR: \(error)") }
-            
+                        
         }
+        
     }
-
     
     
-// MARK: - Alert's and supporting functions
+    
+    // MARK: - Alert's and supporting functions
     func scanningNotPossible() {
         let alert = UIAlertController(title: "Can't Scan.", message: "Let's try a device equipped with a camera.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

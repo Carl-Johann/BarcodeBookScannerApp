@@ -8,6 +8,7 @@
 
 import Foundation
 import GoogleSignIn
+import UIKit
 
 struct GoogleBooksClient {
     
@@ -16,19 +17,21 @@ struct GoogleBooksClient {
     func getBookInformationFromBarcode( _ barcode: Int, CHForBookInformation: @escaping (_ succes: Bool, _ data: [String : AnyObject], _ errorMessage: String) -> Void) {
         DispatchQueue.main.async {
             
+//            
+//            let lort = [
+//                GoogleBooksClient.GoogleBooksSearchParameterKeys.isbn : barcode
+//            ]
+//            
+//            let searchParameter = GoogleBooksClient.sharedInstance.makeSearchQueryItemValue(lort as [String : AnyObject])
+//            let parameters = [
+//                GoogleBooksClient.GoogleBooksSearchParameterKeys.q : searchParameter,
+//                GoogleBooksClient.GoogleBooksSearchParameterValues.key : GoogleBooksClient.GoogleBooksConstants.ApiKey
+//            ]
+//            
+//            let url = GoogleBooksClient.sharedInstance.flickrURLFromParameters(parameters as [String : AnyObject])
+//            let request = NSMutableURLRequest(url: url)
             
-            let lort = [
-                GoogleBooksClient.GoogleBooksSearchParameterKeys.isbn : barcode
-            ]
-            
-            let searchParameter = GoogleBooksClient.sharedInstance.makeSearchQueryItemValue(lort as [String : AnyObject])
-            let parameters = [
-                GoogleBooksClient.GoogleBooksSearchParameterKeys.q : searchParameter,
-                GoogleBooksClient.GoogleBooksSearchParameterValues.key : GoogleBooksClient.GoogleBooksConstants.ApiKey
-            ]
-            
-            let url = GoogleBooksClient.sharedInstance.flickrURLFromParameters(parameters as [String : AnyObject])
-            let request = NSMutableURLRequest(url: url)
+            let request = URLRequest(url: URL(string:"https://www.googleapis.com/books/v1/volumes?q=isbn:\(barcode)&key=AIzaSyA8sOQ5kQ_ksODktYp_O9ogrUKJc3yau-k")!)
             
             let task = self.session.dataTask(with: request as URLRequest) { data, response, error in
                 if error != nil {
@@ -63,65 +66,190 @@ struct GoogleBooksClient {
     
     
     func getSpecificBookShelfFromUser(BookshelfID: Int, completionHandler: @escaping (_ succes: Bool, _ succesDescription: String, _ items: [[String:AnyObject]]?) -> Void) {
-        print(0)
-//        DispatchQueue.global().async(execute: {
-//        DispatchQueue.global().async(execute:{
-    
-        print(0.5)
         
-//        DispatchQueue.main.async {
         DispatchQueue.global(qos: .userInitiated).async {
-        
-        
-            print(1)
             if (GIDSignIn.sharedInstance().currentUser != nil) {
-                print(2)
                 guard let accessToken = GIDSignIn.sharedInstance().currentUser.authentication.accessToken else { print("AccesToken == nil"); return }
-                print(3)
                 
                 guard let url = URL(string: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/\(BookshelfID)/volumes?access_token=\(accessToken)") else {
                     print("Url is invalid for 'getSpecificBookShelfFromUser'")
                     completionHandler(false, "Internal error. Try agian later", nil); return
                 }
-                print(4)
+                
                 let request = URLRequest(url: url)
-                print(5)
+                
                 
                 let task = self.session.dataTask(with: request as URLRequest) { data, response, error in
-                    print(6)
                     if error != nil {
                         print("Error occured making a URL request to googleAPI", error!)
                         completionHandler(false, "Internal error. Try agian", nil); return
                     }
-                    print(7)
                     
                     let parsedResult = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as AnyObject
-                    print(8)
+                    
                     guard let numberOfBooks = parsedResult["totalItems"] as? Int else {
-                        print(9)
+                        print("totalItems as 'Int' failed")
                         completionHandler(false, "Internal error. Try agian later", nil); return
                     }
-                    print(10)
+                    
                     if numberOfBooks == 0 {
-                        print(11)
                         completionHandler(true, "No books in bookshelf", nil); return
                     }
-                    print(12)
+                    
                     guard let items = parsedResult["items"] as? [[String:AnyObject]] else {
                         print("Couldn't find items in parsedResult")
                         completionHandler(false, "Internal error. Try agian", nil); return
                     }
-                    print(13)
+                    
                     completionHandler(true, "", items)
                     
                 }
-                print(14)
                 task.resume()
             }
         }
-//        }
-//            })
     }
+    
+    
+    func postToBookshelf(BookshelfID: Int, bookID: String, add: Bool) {
+        let accessToken = GIDSignIn.sharedInstance().currentUser.authentication.accessToken
+        var postType: String
+        
+        if add == true { postType = "addVolume"
+        } else { postType = "removeVolume" }
+        
+        DispatchQueue.global(qos: .background).async {
+            print("postType:", postType)
+//            guard let url = URL(string: "
+//            https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/removeVolume?volumeId=\(bookID)&key=\(GoogleBooksConstants.ApiKey)") else {
+//            https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/removeVolume?volumeId=qBTQDQAAQBAJ&key=AIzaSyA8sOQ5kQ_ksODktYp_O9ogrUKJc3yau-k
+//                print("Url is invalid for 'getSpecificBookShelfFromUser'"); return
+//            }
+            
+            // bookshelfID  -- good
+            // bookID       --
+            // add          -- good
+            
+            let url = URL(string: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/\(BookshelfID)/\(postType)?volumeId=\(bookID)&key=AIzaSyA8sOQ5kQ_ksODktYp_O9ogrUKJc3yau-k")
+            print(1, url!)
+            var request = URLRequest(url: url!)
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("CONTENT_LENGTH", forHTTPHeaderField: "Content-Length")
+            request.addValue("Bearer \(accessToken!)", forHTTPHeaderField: "Authorization")
+            request.httpMethod = "POST"
+            
+            self.session.dataTask(with: request as URLRequest) { data, response, error in
+                if error != nil {
+                    print("An error occured trying to post to bookshelf"); return
+                }
+                print("access token:", accessToken)
+                
+                guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
+                    print("Your request returned a status code other than 2xx!"); return
+                }
+                print("StatusCode:", statusCode)
+//                let parsedResult a= try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as AnyObject
+//                print(1, parsedResult)
+                print("succesfully updated bookshelf")
+                
+            }.resume()
+            
+            
+        }
+    }
+    
+    
+    func getConvenienceBookFromScannedBook(items: [[String : AnyObject]]) -> ConvenienceBook {
+        
+        var scannedBook = ConvenienceBook()
+        
+        // Safely unwraps the desired values from the JSON gotten from scanning the barcode, and calling the 'getBookInformationFromBarcode' function
+        for item in items {
+            guard let volumeInfo = item["volumeInfo"] as? [String : AnyObject] else { print("volumeInfo wasn't accessible in item"); return scannedBook }
+            guard let bookID = item["id"] as? String else { print("'id' wasn't accessible in 'item'"); return scannedBook }
+            guard let bookTitle = volumeInfo["title"] as? String else { print("'title' wasn't accessible in 'volumeInfo'"); return scannedBook }
+            
+            scannedBook.bookID = bookID
+            scannedBook.title = bookTitle
+            
+            if let imageLinks = volumeInfo["imageLinks"] as? [String : AnyObject] {
+                
+                if let smallBookThumbnail = imageLinks["smallThumbnail"] as? String { scannedBook.smallThumbnail = smallBookThumbnail }
+                if let bookThumbnail = imageLinks["thumbnail"] as? String { scannedBook.thumbnail = bookThumbnail }
+                if let thumbnalIsSmall = imageLinks["small"] as? String { scannedBook.thumbnailIsSmall = thumbnalIsSmall }
+                if let mediumThumbnail = imageLinks["medium"] as? String { scannedBook.mediumThumbnail = mediumThumbnail }
+                if let largeThumbnail = imageLinks["large"] as? String { scannedBook.largeThumbnail = largeThumbnail }
+                if let extraLargeThumbnail = imageLinks["extraLarge"] as? String { scannedBook.extraLargeThumbnail = extraLargeThumbnail }
+            }
+            
+            if let publisher = volumeInfo["publisher"] as? String { scannedBook.publisher = publisher }
+            if let publishedDate = volumeInfo["publishedDate"] as? String { scannedBook.publishedDate = publishedDate}
+            if let numberOfPages = volumeInfo["pageCount"] as? Int { scannedBook.numberOfPages = String(numberOfPages) }
+            if let mainCategory = volumeInfo["mainCategory"] as? String { scannedBook.mainCategory = mainCategory }
+            
+            
+            // Checks if the key("authors", "categories") is available in 'volumeInfo'.
+            // If it is, we itterate through it, and append the value in a string to 'scannedBook' where it is further 'treated'
+            if let authors = volumeInfo["authors"] as? [String] { for author in authors { scannedBook.authors.append(", \(author)")  } }
+            if let categories = volumeInfo["categories"] as? [String] { for category in categories { scannedBook.categories.append(", \(category)") } }
+            
+            
+            
+            
+            guard let industryIdentifiers = volumeInfo["industryIdentifiers"] as? [[String : AnyObject]] else {
+                print("'industryIdentifiers' wasn't accessible in 'volumeInfo'"); return scannedBook }
+            
+            // Iterates through 'industryIdentifiers', checks and sets the ISBN values
+            for identifier in industryIdentifiers {
+                guard let isbnNumber = identifier["identifier"] as? String else { print("ISBNNumber wasn't accessible in 'identifier' in 'industryIdentifiers'"); return scannedBook }
+                guard let isbnNumberIdentifier = identifier["type"] as? String else { print("'type' wasn't accessible in 'identifier' in 'industryIdentifiers'"); return scannedBook }
+                
+                // Checks the key 'isbnNumberIdentifier', and sets the corensponding isbn number values
+                if isbnNumberIdentifier == "ISBN_10" { scannedBook.isbn10 = isbnNumber }
+                else if isbnNumberIdentifier == "ISBN_13" { scannedBook.isbn13 = isbnNumber }
+                
+            }
+        }
+        
+        return scannedBook
+    }
+    
+    
+    
+    
+    func getAuthenticatedUsersBookshelfs(completionHandler: @escaping (_ succes: Bool, _ items: [[String: AnyObject]]?) -> Void) {
+        let accessToken = GIDSignIn.sharedInstance().currentUser.authentication.accessToken
+        let url = URL(string: "https://www.googleapis.com/books/v1/mylibrary/bookshelves?access_token=\(accessToken!)")!
+        
+        let request = URLRequest(url: url)
+        
+        session.dataTask(with: request) { (data, response, error) in
+            if error != nil {
+                print("Couldn't get user's bookshelfs"); print(error!)
+                completionHandler(false, nil); return
+            }
+            
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                print("Your request returned a status code other than 2xx!") ; return
+            }
+
+            let parsedResult = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as AnyObject
+            
+            guard let items = parsedResult as? [String : AnyObject] else {
+                print("Items couldn't be safely converted to '[String : AnyObject]'")
+                completionHandler(false, nil) ; return
+            }
+            print(2, items)
+            
+            guard let bookshelfs = items["items"] as? [[String : AnyObject]] else { print("Can't get 'items' in 'parsedResult'")
+                completionHandler(false, nil); return
+            }
+            
+            completionHandler(true, bookshelfs)
+            
+        }.resume()
+        
+    }
+    
     
     
     
@@ -150,10 +278,9 @@ struct GoogleBooksClient {
         }
         if componentsString.characters.last == "+" { componentsString.characters.removeLast() }
         
+        
         return componentsString
     }
-    
-    
     
     
     

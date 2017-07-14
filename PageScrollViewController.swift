@@ -42,7 +42,7 @@ class PageScrollViewController: UIViewController, UIScrollViewDelegate {
         BarcodeScannerVC!.view.frame = BarcodeScannerVCFrame
         
         
-        let BookShelfVC = self.storyboard?.instantiateViewController(withIdentifier: "BookShelfVC") as! BookShelf!
+        let BookShelfVC = self.storyboard?.instantiateViewController(withIdentifier: "BookShelfVC") as! BookShelfCV!
         
         self.addChildViewController(BookShelfVC!)
         self.scrollView.addSubview(BookShelfVC!.view)
@@ -63,15 +63,16 @@ class PageScrollViewController: UIViewController, UIScrollViewDelegate {
     func configurePageControl() {
         
         pageControl.numberOfPages = pages.count
-        pageControl.backgroundColor = .lightGray
-        pageControl.currentPageIndicatorTintColor = .white
-        pageControl.pageIndicatorTintColor = .darkGray
+        
+        pageControl.currentPageIndicatorTintColor = .darkGray
+        pageControl.backgroundColor = .clear
+        pageControl.pageIndicatorTintColor = .lightGray
         pageControl.currentPage = 0
-        pageControl.alpha = 0.3
+        pageControl.alpha = 0.7
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(pageControl)
         
-//      For the design, it looks best if the height and width value are switched
+        //      For the design, it looks best if the height and width value are switched
         let pageControlWidth = pageControl.size(forNumberOfPages: pages.count).height
         let pageControlHeight = pageControl.size(forNumberOfPages: pages.count).width
         
@@ -82,8 +83,7 @@ class PageScrollViewController: UIViewController, UIScrollViewDelegate {
         
         let heightConstraint = NSLayoutConstraint(item: pageControl, attribute: .height, relatedBy: .equal, toItem: nil,
                                                   attribute: .notAnAttribute, multiplier: 1, constant: pageControlHeight)
-        pageControl.frame.insetBy(dx: pageControlWidth/7.5, dy: pageControlHeight/7.5)
-        pageControl.layer.cornerRadius = 4
+        
         
         view.addConstraints([horizontalConstraint, verticalConstraint, widthConstraint, heightConstraint])
     }
