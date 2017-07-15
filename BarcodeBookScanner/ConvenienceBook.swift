@@ -57,11 +57,14 @@ struct ConvenienceBook {
             "bookID": self.bookID
         ]
         
-        for value in values {
-            if value.value.isEmpty { values.removeValue(forKey: value.key) }
+        var nonEmptyKeyValuePairs: [String : String] = [String : String]()
+        
+        for keyValuePair in values {
+//            if !(keyValuePair.value.isEmpty) { values.removeValue(forKey: keyValuePair.key) }
+            if !(keyValuePair.value.isEmpty) { nonEmptyKeyValuePairs.updateValue(keyValuePair.value, forKey: keyValuePair.key) }
         }
         
-        return values
+        return nonEmptyKeyValuePairs
     }
     
     private func getThumbnails() -> [String : String] {

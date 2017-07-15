@@ -25,15 +25,30 @@ class BookShelfCV: UIViewController, UICollectionViewDelegate, UICollectionViewD
     let emptyBookshelfScannerImage = UIImageView()
     var isInitailSetupDone = false
     
-    var fetchRequest: NSFetchRequest<Book>?
-    var fetchedResultsController: NSFetchedResultsController<Book>?
+//    var fetchRequest: NSFetchRequest<Book>?
+//    var fetchedResultsController: NSFetchedResultsController<Book>?
     
     let navItem = UINavigationItem(title: "")
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var bookshelfs: [GoogleBookshelf] = []
-    var booksInCV = [ConvenienceBook]()
-    var downloadedBookInCV = [Book]()
+    var bookshelfs: [GoogleBookshelf] = [GoogleBookshelf]()
+    var booksInCV: [ConvenienceBook] = [ConvenienceBook]()
+    var downloadedBookInCV: [Book] = [Book]()
+    
+    
+    lazy var fetchedResultsController = { () -> NSFetchedResultsController<Book> in
+        
+        let fetchRequest = NSFetchRequest<Book>(entityName: "Book")
+        fetchRequest.sortDescriptors = []
+        
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.appDelegate.stack.context, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        return fetchedResultsController
+    }()
+
+    
     
     override func viewDidLoad() {
         // Load the users books
@@ -53,17 +68,27 @@ class BookShelfCV: UIViewController, UICollectionViewDelegate, UICollectionViewD
 
         
         // Fetch the scanned book
-        fetchRequest = NSFetchRequest<Book>(entityName: "Book")
-        fetchRequest?.sortDescriptors = [ ]
+//        fetchRequest = NSFetchRequest<Book>(entityName: "Book")
+//        fetchRequest?.sortDescriptors = [ ]
         
-        let context = self.appDelegate.stack.context
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest!, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+//        let context = self.appDelegate.stack.context
+//        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest!, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         
-        do { try fetchedResultsController?.performFetch()
+        
+        do { try fetchedResultsController.performFetch()
         } catch { print("Failed to initialize FetchedResultsController: \(error)") }
         
-        for fetchedObject in fetchedResultsController!.fetchedObjects! { downloadedBookInCV.append(fetchedObject) }
+        print("Number of Book's in fetchedResultsController:", (fetchedResultsController.fetchedObjects?.count)!)
+        for fetchedObject in fetchedResultsController.fetchedObjects! { downloadedBookInCV.append(fetchedObject) }
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        print("BookShelfCV will appear")
+//        do { try fetchedResultsController?.performFetch()
+//        } catch { print("Failed to initialize FetchedResultsController: \(error)") }
+//        coreDataArray()
     }
     
     
@@ -142,6 +167,7 @@ class BookShelfCV: UIViewController, UICollectionViewDelegate, UICollectionViewD
                     self.booksInCV[index].isThumbnailAvailable = true
                     
                     for cell in self.collectionView.visibleCells {
+                        
                         let bookCell = cell as! BookCell
                         // Get the right cell
                         if bookCell.associatedConvenienceBook?.isbn13 == convenienceBook.isbn13 {

@@ -106,17 +106,15 @@ extension BookShelfCV {
         case true : break
         case false:
             
-            let bookshelfID = titles.index(of: navItem.title!)
+            let selectedIndexPaths = collectionView.indexPathsForSelectedItems
             
             let index = bookshelfs.index(where: { (bookshelf) -> Bool in
                 bookshelf.title == navItem.title
             })
-            print("Clicked index:", index!)
-            let selectedIndexPaths = collectionView.indexPathsForSelectedItems
             
-//            if bookshelfID! < self.titles.count - 1 {
-            if index! < self.bookshelfs.count {
-                
+            if index != nil {
+                print("Fis")
+                print("Index:", index)
                 // We reverse it to make sure the deleted item's indexPath is less than the previous item
                 for indexPath in selectedIndexPaths!.reversed() {
                     let book = collectionView.cellForItem(at: indexPath) as! BookCell
@@ -127,25 +125,96 @@ extension BookShelfCV {
                         self.booksInCV.remove(at: indexPath[1])
                     })
                     
-                    GoogleBooksClient.sharedInstance.postToBookshelf(BookshelfID: bookshelfID!, bookID: bookID!, add: false)
-                    
+                    GoogleBooksClient.sharedInstance.postToBookshelf(BookshelfID: self.bookshelfs[index!].id!, bookID: bookID!, add: false)
                 }
-            } else if index == self.titles.count {
-                
+                return
+            }
+            
+            
+//            fuckfuck()
+            
+            print("Deleting a core data book")
+//            DispatchQueue.main.async {
                 for indexPath in selectedIndexPaths!.reversed() {
+                    let bookToDelete = self.appDelegate.stack.context.object(with: self.downloadedBookInCV[indexPath.item].objectID)
+                    print("Book to delete:", bookToDelete)
+                    print("IndexPath:", indexPath)
                     
                     self.collectionView.performBatchUpdates({
+                        
+                        self.appDelegate.stack.context.delete(bookToDelete)
+                        self.booksInCV.remove(at: indexPath.item)
                         self.collectionView.deleteItems(at: [indexPath])
-                        self.appDelegate.stack.context.delete(self.downloadedBookInCV[indexPath[1]])
-                    }) { (true) in
-                        do { try self.appDelegate.stack.saveContext()
-                        } catch { print("Failed to save: \(error)") }
-                    }
+                        
+                    })
+                    
                 }
-            }            
+//            }
+
+            
+            // slette 'bookToDelete', og fikse 'fatal error: Index out of range' hvis man skifter bookshelf inden alle billeder er downloadet
+            
+            print("lort")
         }
     }
     
+        
+    func deleteSelectedObject() {
+        let itemIndexPaths = collectionView.indexPathsForSelectedItems!
+        var selectedObjectsFromObjectID = [NSManagedObject]()
+        
+        
+        for indexPath in itemIndexPaths {
+            //            let cell = photosCollectionView.cellForItem(at: indexPath) as! PhotoCell
+            //            guard let photoFromCell = cell.associatedPhoto else { print("cell.associatedPhoto was not succesfully unwrapped"); return }
+            
+            let bookToDelete = self.appDelegate.stack.context.object(with: self.downloadedBookInCV[indexPath.item].objectID)
+            
+//            let object = appDelegate.stack.context.object(with: bookToDeletesID)
+            selectedObjectsFromObjectID.append(bookToDelete)
+            
+        }
+        let managedObjectsToDeleteAsNSSet = NSSet(array: selectedObjectsFromObjectID )
+        
+        
+        
+        self.collectionView.performBatchUpdates({
+            
+            self.collectionView.deleteItems(at: itemIndexPaths)
+//            self.appDelegate.stack.context.delete(managedObjectsToDeleteAsNSSet)
+//            self.collectionViewPin?.removeFromPhotos(managedObjectsToDeleteAsNSSet)
+            
+        }) { (true) in
+            do { try self.appDelegate.stack.saveContext()
+            } catch { print("An error occured trying to save core data") }
+        }
+
+    
+    
+    }
+    
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+        switch type {
+        case .delete:
+            print("deleted an object")
+//            collectionView.performBatchUpdates({
+//                self.collectionView.deleteItems(at: [indexPath!])
+//            })
+        case .insert:
+            print("inserted an object")
+        case .move:
+            print("moved an object")
+        case .update:
+            print("updated an object")
+            self.coreDataArray()
+            //            if let index = indexPath, let cell = photosCollectionView.cellForItem(at: index) as? PhotoCell {
+            //                configureCell(index, cell)
+            //            }
+            
+        }
+    }
     
     func coreDataArray() {
         

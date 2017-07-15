@@ -41,7 +41,6 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, UICollec
         // Setup of the add button
         postButton = UIBarButtonItem(image: UIImage(named: "AddToCloudIcon"), style: .plain , target: self, action: #selector(postSelectedBookshelfOptions))
         
-        
         guard (convenienceBook != nil) else { print("ConveninceBook is nil"); errorOccuredErrorAlert(); return }
         
         // If there's a thumbnail available we setup the 'bookCoverImageView'

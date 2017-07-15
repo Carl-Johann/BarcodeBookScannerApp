@@ -126,7 +126,7 @@ struct GoogleBooksClient {
 //            }
             
             // bookshelfID  -- good
-            // bookID       --
+            // bookID       -- good
             // add          -- good
             
             let url = URL(string: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/\(BookshelfID)/\(postType)?volumeId=\(bookID)&key=AIzaSyA8sOQ5kQ_ksODktYp_O9ogrUKJc3yau-k")
@@ -238,7 +238,6 @@ struct GoogleBooksClient {
                 print("Items couldn't be safely converted to '[String : AnyObject]'")
                 completionHandler(false, nil) ; return
             }
-            print(2, items)
             
             guard let bookshelfs = items["items"] as? [[String : AnyObject]] else { print("Can't get 'items' in 'parsedResult'")
                 completionHandler(false, nil); return
