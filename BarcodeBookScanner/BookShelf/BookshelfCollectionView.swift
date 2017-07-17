@@ -86,11 +86,11 @@ extension BookShelfCV {
                             if succes == false {
                                 self.presentBarcodeErrorMessage(errorMessage: errorMessage); return
                             }
+                            // Core Data object
                             
                             guard let items = data["items"] as? [[String : AnyObject]] else { print("Couldn't access 'items' in data");
-                                
-                                self.presentBarcodeErrorMessage(errorMessage: "Internal error. Try agian later"); return }
-                            
+                            self.presentBarcodeErrorMessage(errorMessage: "Internal error. Try agian later"); return }
+                        
                             var convenienceBook = GoogleBooksClient.sharedInstance.getConvenienceBookFromScannedBook(items: items)
                             
                             convenienceBook.title = (selectedCellConvenienceBook?.title)!
@@ -101,14 +101,21 @@ extension BookShelfCV {
                             
                             bookDetailVC.convenienceBook = convenienceBook
                             
+                            var titlesToTransfer = self.titles
+                            titlesToTransfer.removeLast()
+                            bookDetailVC.titles = titlesToTransfer
+                            
                             let bookDetailVCNavigationController: UINavigationController = UINavigationController(rootViewController: bookDetailVC)
                             self.present(bookDetailVCNavigationController, animated: true, completion: nil)
                         }
                     }
                     
-                } else if self.navItem.title != "Scanned Books" {
+                } else if self.navItem.title != "Scanned books" {
                     bookDetailVC.convenienceBook = selectedCellConvenienceBook
-                    bookDetailVC.titles = self.titles
+                    
+                    var titlesToTransfer = self.titles
+                    titlesToTransfer.removeLast()
+                    bookDetailVC.titles = titlesToTransfer
                     let bookDetailVCNavigationController: UINavigationController = UINavigationController(rootViewController: bookDetailVC)
                     self.present(bookDetailVCNavigationController, animated: true, completion: nil)
                     
@@ -117,17 +124,16 @@ extension BookShelfCV {
         }
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BookCell", for: indexPath) as! BookCell
-        let bookAtIndexPath = booksInCV[indexPath[1]] as ConvenienceBook
+        let bookAtIndexPath = booksInCV[indexPath.item] as ConvenienceBook
         cell.associatedConvenienceBook = bookAtIndexPath
         
         cell.backgroundColor = .lightGray
         cell.loadingIndicator.startAnimating()
         cell.bookCoverImage.alpha = 0
         
-        cell.bookTitle.text = bookAtIndexPath.title
+        cell.bookTitle.text = ""
         cell.layer.borderWidth = 1
         cell.layer.borderColor = UIColor.black.cgColor
         cell.layer.cornerRadius = 3
@@ -140,7 +146,8 @@ extension BookShelfCV {
         
         
         guard bookAtIndexPath.isThumbnailAvailable else { return cell }
-        guard let smallestThumbnail = bookAtIndexPath.smallestThumbnail else { print("bookAtIndexPath.smallestThumbnail == nil"); return cell }
+        guard let smallestThumbnail = bookAtIndexPath.smallestThumbnail else { print("bookAtIndexPath.smallestThumbnail == nil, while isThumbnailAvailable == true"); return cell }
+        cell.bookTitle.text = bookAtIndexPath.title
         cell.bookCoverImage.image = smallestThumbnail
         cell.loadingIndicator.stopAnimating()
         cell.bookCoverImage.alpha = 1

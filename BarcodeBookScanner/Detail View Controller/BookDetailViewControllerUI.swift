@@ -130,8 +130,7 @@ extension BookDetailViewController {
                 addToBookshelf.reloadData()
                 
                 origin.y += addToBookshelf.frame.height
-            }
-            
+            }            
         }
         
         

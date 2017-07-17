@@ -118,19 +118,13 @@ struct GoogleBooksClient {
         } else { postType = "removeVolume" }
         
         DispatchQueue.global(qos: .background).async {
-            print("postType:", postType)
-//            guard let url = URL(string: "
-//            https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/removeVolume?volumeId=\(bookID)&key=\(GoogleBooksConstants.ApiKey)") else {
-//            https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/removeVolume?volumeId=qBTQDQAAQBAJ&key=AIzaSyA8sOQ5kQ_ksODktYp_O9ogrUKJc3yau-k
-//                print("Url is invalid for 'getSpecificBookShelfFromUser'"); return
-//            }
             
             // bookshelfID  -- good
             // bookID       -- good
             // add          -- good
             
             let url = URL(string: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/\(BookshelfID)/\(postType)?volumeId=\(bookID)&key=AIzaSyA8sOQ5kQ_ksODktYp_O9ogrUKJc3yau-k")
-            print(1, url!)
+
             var request = URLRequest(url: url!)
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue("CONTENT_LENGTH", forHTTPHeaderField: "Content-Length")
@@ -141,15 +135,9 @@ struct GoogleBooksClient {
                 if error != nil {
                     print("An error occured trying to post to bookshelf"); return
                 }
-                print("access token:", accessToken)
                 
-                guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-                    print("Your request returned a status code other than 2xx!"); return
-                }
-                print("StatusCode:", statusCode)
-//                let parsedResult a= try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as AnyObject
-//                print(1, parsedResult)
-                print("succesfully updated bookshelf")
+                guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { return }
+                print("Post statusCode:", statusCode)
                 
             }.resume()
             
@@ -238,7 +226,7 @@ struct GoogleBooksClient {
                 print("Items couldn't be safely converted to '[String : AnyObject]'")
                 completionHandler(false, nil) ; return
             }
-            
+
             guard let bookshelfs = items["items"] as? [[String : AnyObject]] else { print("Can't get 'items' in 'parsedResult'")
                 completionHandler(false, nil); return
             }
@@ -250,37 +238,37 @@ struct GoogleBooksClient {
     }
     
     
-    
-    
-    func flickrURLFromParameters(_ parameters: [String: AnyObject] = [:], _ isSearchCall: String? = nil) -> URL {
-        
-        var components = URLComponents()
-        
-        components.scheme = GoogleBooksConstants.APIScheme
-        components.host = GoogleBooksConstants.APIHost
-        components.path = GoogleBooksConstants.APIPath
-        components.queryItems = [URLQueryItem]()
-        for (key, value) in parameters {
-            let queryItem = URLQueryItem(name: key, value: "\(value)")
-            components.queryItems!.append(queryItem)
-            
-        }
-        return components.url!
-    }
-    
-    func makeSearchQueryItemValue(_ parameters: [String:AnyObject]) -> String {
-        var componentsString: String = ""
-        
-        for (key, value) in parameters {
-            let queryItem = "\(key):\(value)+"
-            componentsString.append(queryItem)
-        }
-        if componentsString.characters.last == "+" { componentsString.characters.removeLast() }
-        
-        
-        return componentsString
-    }
-    
+//    
+//    
+//    func flickrURLFromParameters(_ parameters: [String: AnyObject] = [:], _ isSearchCall: String? = nil) -> URL {
+//        
+//        var components = URLComponents()
+//        
+//        components.scheme = GoogleBooksConstants.APIScheme
+//        components.host = GoogleBooksConstants.APIHost
+//        components.path = GoogleBooksConstants.APIPath
+//        components.queryItems = [URLQueryItem]()
+//        for (key, value) in parameters {
+//            let queryItem = URLQueryItem(name: key, value: "\(value)")
+//            components.queryItems!.append(queryItem)
+//            
+//        }
+//        return components.url!
+//    }
+//    
+//    func makeSearchQueryItemValue(_ parameters: [String:AnyObject]) -> String {
+//        var componentsString: String = ""
+//        
+//        for (key, value) in parameters {
+//            let queryItem = "\(key):\(value)+"
+//            componentsString.append(queryItem)
+//        }
+//        if componentsString.characters.last == "+" { componentsString.characters.removeLast() }
+//        
+//        
+//        return componentsString
+//    }
+//    
     
     
     static let sharedInstance = GoogleBooksClient()

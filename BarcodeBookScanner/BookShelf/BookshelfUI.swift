@@ -54,12 +54,7 @@ extension BookShelfCV {
         collectionView.addSubview(emptyBookshelfScannerImage)
         
     }
-    
-    func removeBookFromBookshelf() {
         
-        
-    }
-    
     func setupNavBarItem() {
         
         // Setup of the navigation bar
@@ -83,8 +78,10 @@ extension BookShelfCV {
         dropDownView = AZDropdownMenu(titles: titles)
         dropDownView!.itemAlignment = .right
         dropDownView!.cellTapHandler = { [weak self] (indexPath: IndexPath) -> Void in
-            
             self?.booksInCV.removeAll()
+            DispatchQueue.main.async { self?.collectionView.reloadData() }
+            
+            self?.navItem.rightBarButtonItem?.isEnabled = false
             
             if indexPath[1] < (self?.titles.count)! - 1 {
                 self?.loadBookshelf(bookshelfID: (self?.bookshelfs[indexPath[1]].id)!)
@@ -113,9 +110,7 @@ extension BookShelfCV {
             })
             
             if index != nil {
-                print("Fis")
-                print("Index:", index)
-                // We reverse it to make sure the deleted item's indexPath is less than the previous item
+                // We reverse 'selectedIndexPaths' to make sure the deleted item's indexPath is less than the previous item
                 for indexPath in selectedIndexPaths!.reversed() {
                     let book = collectionView.cellForItem(at: indexPath) as! BookCell
                     let bookID = book.associatedConvenienceBook?.bookID
@@ -131,106 +126,43 @@ extension BookShelfCV {
             }
             
             
-//            fuckfuck()
-            
-            print("Deleting a core data book")
-//            DispatchQueue.main.async {
-                for indexPath in selectedIndexPaths!.reversed() {
-                    let bookToDelete = self.appDelegate.stack.context.object(with: self.downloadedBookInCV[indexPath.item].objectID)
-                    print("Book to delete:", bookToDelete)
-                    print("IndexPath:", indexPath)
+            for indexPath in selectedIndexPaths!.reversed() {
+                let bookToDelete = fetchedResultsController.object(at: indexPath)
+                
+                self.collectionView.performBatchUpdates({
                     
-                    self.collectionView.performBatchUpdates({
-                        
-                        self.appDelegate.stack.context.delete(bookToDelete)
-                        self.booksInCV.remove(at: indexPath.item)
-                        self.collectionView.deleteItems(at: [indexPath])
-                        
-                    })
-                    
-                }
-//            }
+                    self.appDelegate.stack.context.delete(bookToDelete)
+                    self.booksInCV.remove(at: indexPath.item)
+                    self.collectionView.deleteItems(at: [indexPath])
 
-            
-            // slette 'bookToDelete', og fikse 'fatal error: Index out of range' hvis man skifter bookshelf inden alle billeder er downloadet
-            
-            print("lort")
-        }
-    }
-    
-        
-    func deleteSelectedObject() {
-        let itemIndexPaths = collectionView.indexPathsForSelectedItems!
-        var selectedObjectsFromObjectID = [NSManagedObject]()
-        
-        
-        for indexPath in itemIndexPaths {
-            //            let cell = photosCollectionView.cellForItem(at: indexPath) as! PhotoCell
-            //            guard let photoFromCell = cell.associatedPhoto else { print("cell.associatedPhoto was not succesfully unwrapped"); return }
-            
-            let bookToDelete = self.appDelegate.stack.context.object(with: self.downloadedBookInCV[indexPath.item].objectID)
-            
-//            let object = appDelegate.stack.context.object(with: bookToDeletesID)
-            selectedObjectsFromObjectID.append(bookToDelete)
-            
-        }
-        let managedObjectsToDeleteAsNSSet = NSSet(array: selectedObjectsFromObjectID )
-        
-        
-        
-        self.collectionView.performBatchUpdates({
-            
-            self.collectionView.deleteItems(at: itemIndexPaths)
-//            self.appDelegate.stack.context.delete(managedObjectsToDeleteAsNSSet)
-//            self.collectionViewPin?.removeFromPhotos(managedObjectsToDeleteAsNSSet)
-            
-        }) { (true) in
-            do { try self.appDelegate.stack.saveContext()
-            } catch { print("An error occured trying to save core data") }
-        }
-
-    
-    
-    }
-    
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-        switch type {
-        case .delete:
-            print("deleted an object")
-//            collectionView.performBatchUpdates({
-//                self.collectionView.deleteItems(at: [indexPath!])
-//            })
-        case .insert:
-            print("inserted an object")
-        case .move:
-            print("moved an object")
-        case .update:
-            print("updated an object")
-            self.coreDataArray()
-            //            if let index = indexPath, let cell = photosCollectionView.cellForItem(at: index) as? PhotoCell {
-            //                configureCell(index, cell)
-            //            }
-            
+                }, completion: { (true) in
+                    do { try self.appDelegate.stack.saveContext()
+                    } catch { print("An error occured trying to save core data") }
+                })
+                
+            }                        
         }
     }
     
     func coreDataArray() {
         
-        for fetchedObject in downloadedBookInCV {
+        booksInCV.removeAll()
+        collectionView.reloadData()
+
+        do { try fetchedResultsController.performFetch()
+        } catch { print("Failed to initialize FetchedResultsController: \(error)") }
+        
+        for fetchedObject in fetchedResultsController.fetchedObjects! {            
             var convenienceBook = ConvenienceBook()
             
-            convenienceBook.title = fetchedObject.bookTitle!
             convenienceBook.smallestThumbnail = UIImage(data: fetchedObject.bookCoverAsData! as Data)
+            convenienceBook.title = fetchedObject.bookTitle!
             convenienceBook.largestThumbnail = UIImage(data: fetchedObject.bookCoverAsData! as Data)
             convenienceBook.isbn13 = String(fetchedObject.isbn13)
             convenienceBook.isThumbnailAvailable = true
             
             booksInCV.append(convenienceBook)
         }
-        collectionView.reloadData()
-        
     }
-    
+
 }

@@ -23,8 +23,26 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
     override func viewDidLoad() {
         super.viewDidLoad()
         //        print("BarcodeScannerViewController did load")
+        
         // Sets up the camera, and barcode scanner
         setupCamera()
+        
+        
+        if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) == AVAuthorizationStatus.authorized {
+            // Already Authorized
+        } else {
+            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted: Bool) -> Void in
+                // User granted access.
+                if granted {
+                    if !(self.session.isRunning) {
+                        self.session.startRunning()
+                        
+                        self.checkAndAddOutput()
+                    }
+                }
+            })
+        }
+        
         
         
     }

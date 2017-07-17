@@ -32,7 +32,6 @@ extension BookDetailViewController {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
         
-//        collectionView.backgroundColor = .lightGray
         cell.layer.borderWidth = 1.5
         cell.layer.cornerRadius = 3
         cell.layer.borderColor = UIColor.black.cgColor
@@ -43,7 +42,6 @@ extension BookDetailViewController {
         textView.textContainer.maximumNumberOfLines = 0
         textView.textAlignment = .center
         textView.isUserInteractionEnabled = false
-        
         textView.textContainer.lineBreakMode = .byClipping
         textView.backgroundColor = .lightGray
         textView.layer.cornerRadius = 3
@@ -61,17 +59,11 @@ extension BookDetailViewController {
     func checkAndUpdateView(_ selectedCell: UICollectionViewCell) {
         
         if addToBookshelf.indexPathsForSelectedItems?.count != 0 {
-//            postButton.isEnabled = true
             navigationItem.rightBarButtonItems = [postButton]
-//            newCollectionButton.isHidden = true
-//            deleteSelectedButton.isHidden = false
             
         } else {
             if addToBookshelf.indexPathsForSelectedItems?.count == 0 {
-//                postButton.isEnabled = false
                 navigationItem.rightBarButtonItems = []
-//                newCollectionButton.isHidden = false
-//                deleteSelectedButton.isHidden = true
                 
             }
         }

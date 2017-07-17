@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Cosmos
 
+
 class BookDetailViewController: UIViewController, UIScrollViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     
@@ -26,10 +27,7 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, UICollec
     var addToBookshelf: UICollectionView!
     var scrollView = UIScrollView()
     var contentView = UIView()
-    
-    // få brugerens reoler og add dem til tiles
-    // tilføj den skannede bog til 'eBooks' i baggrunden når view er loaded
-    
+            
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -39,7 +37,7 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, UICollec
         self.title = "Detail Page"
         
         // Setup of the add button
-        postButton = UIBarButtonItem(image: UIImage(named: "AddToCloudIcon"), style: .plain , target: self, action: #selector(postSelectedBookshelfOptions))
+        postButton = UIBarButtonItem(image: UIImage(named: "mediumAddToBookshelfIcon"), style: .plain , target: self, action: #selector(postSelectedBookshelfOptions))
         
         guard (convenienceBook != nil) else { print("ConveninceBook is nil"); errorOccuredErrorAlert(); return }
         
@@ -55,20 +53,59 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, UICollec
         // Setup of the scrollView and ContentView
         setupScrollAndContentView()        
         
-    }            
-    
-    
-    
-    func postSelectedBookshelfOptions() {
-        for indexpath in addToBookshelf.indexPathsForSelectedItems! {
-            print("Post book to bookshelf: \(titles[indexpath[1]])")
-            print("convenienceBook id:", convenienceBook!.bookID)
-            GoogleBooksClient.sharedInstance.postToBookshelf(BookshelfID: indexpath[1], bookID: convenienceBook!.bookID, add: true)
-        }
     }
     
     
+    func postSelectedBookshelfOptions() {
+        let preDeleteRowCount = numberOfRowsInAddToCV()
+        
+        // We need to order the selected items to avoid 'index our of range'
+        let selectedItems = addToBookshelf.indexPathsForSelectedItems!.sorted { (item1, item2) -> Bool in
+            return item1 > item2
+        }
+        
+        for indexPath in selectedItems {
+            addToBookshelf.performBatchUpdates({
+                self.addToBookshelf.deleteItems(at: [indexPath])
+                self.titles.remove(at: indexPath.item)
+            })
+            GoogleBooksClient.sharedInstance.postToBookshelf(BookshelfID: indexPath[1], bookID: convenienceBook!.bookID, add: true)
+        }
+        
+        
+        let postDeleteRowCount = numberOfRowsInAddToCV()
+        if preDeleteRowCount != postDeleteRowCount {
+            
+            let postDeleteCVHeight = itemSize().height * preDeleteRowCount
+            let currentCVHeight = itemSize().height * postDeleteRowCount
+            
+            let heightDifference = postDeleteCVHeight - currentCVHeight
+            
+            
+            let maxScrollDistance = contentView.frame.height - view.frame.height - 5
+            // If the 'yValueToScrollTo' - wanted scroll distance - is larger than the allowed macScrollDistance,
+            // we scroll to the default, safe value 'maxScrollDistance'
+            
+            // We add the navBar height and subtract the interitemspacing 
+            var yValueToScrollTo = scrollView.bounds.origin.y - heightDifference + 64 - 3
+            yValueToScrollTo = min(yValueToScrollTo, maxScrollDistance)
+            let pointToScrollTo = CGPoint(x: 0, y: scrollView.bounds.origin.y - heightDifference)
+            
+            UIView.animate(withDuration: 0.4, animations: {
+                self.scrollView.setContentOffset(pointToScrollTo, animated: false)
+            }, completion: { (true) in
+                self.scrollView.contentSize = CGSize(width: self.view.frame.width, height: self.scrollView.contentSize.height - heightDifference)
+                self.contentView.frame = CGRect(x: 0, y: 0, width: self.scrollView.contentSize.width, height: self.scrollView.contentSize.height * 1.01)
+            })
+        }
+    }
     
+    func numberOfRowsInAddToCV() -> CGFloat {
+        let titles = CGFloat(self.titles.count)
+        let rows = (titles / 4).rounded(.up)
+
+        return rows
+    }
     
     
     func itemSize() -> CGSize {
@@ -78,8 +115,7 @@ class BookDetailViewController: UIViewController, UIScrollViewDelegate, UICollec
         
         return CGSize(width: itemSize, height: itemSize)
     }
-    
-    
+        
     
     func bookDescriptionReadMoreAndLessAction() {
         

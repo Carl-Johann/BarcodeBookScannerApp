@@ -37,7 +37,6 @@ extension BookDetailViewController {
     func setupScrollAndContentView() {
         // Setup of the scrollView
         scrollView.frame = view.bounds
-//        scrollView.backgroundColor = .darkGray
         scrollView.backgroundColor = .white
         scrollView.bounces = false
         scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height + 1000)
@@ -104,7 +103,7 @@ extension BookDetailViewController {
     
     
     func setupBookCoverImageView() {
-        
+        print("Setting up book cover image")
         let bookCoverImageView = UIImageView()
         contentView.addSubview(bookCoverImageView)
     }
@@ -127,7 +126,6 @@ extension BookDetailViewController {
         addToBookshelf.isScrollEnabled = false
         
         addToBookshelf.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
-//        addToBookshelf.backgroundColor = .darkGray
         addToBookshelf.backgroundColor = .white
         contentView.addSubview(addToBookshelf)
         

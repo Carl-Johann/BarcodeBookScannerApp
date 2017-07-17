@@ -72,7 +72,7 @@ class PageScrollViewController: UIViewController, UIScrollViewDelegate {
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(pageControl)
         
-        //      For the design, it looks best if the height and width value are switched
+        // For the design, it looks best if the height and width value are switched
         let pageControlWidth = pageControl.size(forNumberOfPages: pages.count).height
         let pageControlHeight = pageControl.size(forNumberOfPages: pages.count).width
         
@@ -84,7 +84,6 @@ class PageScrollViewController: UIViewController, UIScrollViewDelegate {
         let heightConstraint = NSLayoutConstraint(item: pageControl, attribute: .height, relatedBy: .equal, toItem: nil,
                                                   attribute: .notAnAttribute, multiplier: 1, constant: pageControlHeight)
         
-        
         view.addConstraints([horizontalConstraint, verticalConstraint, widthConstraint, heightConstraint])
     }
     func changePage(sender: AnyObject) -> () {
@@ -95,6 +94,7 @@ class PageScrollViewController: UIViewController, UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
         let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)
+        
         pageControl.currentPage = Int(pageNumber)
     }
     

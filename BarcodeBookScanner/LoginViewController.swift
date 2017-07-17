@@ -28,7 +28,90 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        
+        
+        GIDSignIn.sharedInstance().signIn()
+        signIntoFirebase()
+    }
     
+    func signIntoFirebase() {
+        
+        let user = GIDSignIn.sharedInstance().currentUser
+        
+        guard let idToken = user?.authentication.idToken else { print("Couldn't get idToken from user"); return }
+        guard let accessToken = user?.authentication.accessToken else { print("Couldn't get 'accessToken' from user"); return }
+        
+        let credentials = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+        Auth.auth().signIn(with: credentials) { (firebaseUser, error) in
+            
+            if error != nil { print("Failed to sign into Firebase with Google"); return
+            }
+            // user authenticated at Firebase
+            
+            guard let currentUser = GIDSignIn.sharedInstance().currentUser.profile else {
+                print("Couldn't acccess current user"); return
+            }
+            
+            guard let user = firebaseUser else { print("Signed in user == nil"); return }
+            
+            let ref = Database.database().reference(fromURL: "https://barcodebookscanner.firebaseio.com/")
+            let userRef = ref.child("Users").child(user.uid)
+            let values = ["name": currentUser.name, "email": currentUser.email] as [AnyHashable: Any]
+            
+            userRef.updateChildValues(values, withCompletionBlock: { (error, ref) in
+                if error != nil {
+                    print("An error occurred updating users childValues", error!); return
+                }
+            })
+            print("Successfully signed/updated user into Firebase")
+            
+            self.performSegue(withIdentifier: "loginSegue", sender: self)
+            
+        }
+
+    
+    }
+    
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        if error != nil {
+            print("Failed to log into Google", error); return
+        }
+        // user authenticated at Google
+        
+        guard let idToken = user.authentication.idToken else { print("Couldn't get idToken from user"); return }
+        guard let accessToken = user.authentication.accessToken else { print("Couldn't get 'accessToken' from user"); return }
+        
+        let credentials = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+        Auth.auth().signIn(with: credentials) { (firebaseUser, error) in
+            
+            if error != nil { print("Failed to sign into Firebase with Google"); return
+            }
+            // user authenticated at Firebase
+            
+            guard let currentUser = GIDSignIn.sharedInstance().currentUser.profile else {
+                print("Couldn't acccess current user"); return
+            }
+            
+            guard let user = firebaseUser else { print("Signed in user == nil"); return }
+            
+            let ref = Database.database().reference(fromURL: "https://barcodebookscanner.firebaseio.com/")
+            let userRef = ref.child("Users").child(user.uid)
+            let values = ["name": currentUser.name, "email": currentUser.email] as [AnyHashable: Any]
+            
+            userRef.updateChildValues(values, withCompletionBlock: { (error, ref) in
+                if error != nil {
+                    print("An error occurred updating users childValues", error!); return
+                }
+            })
+            print("Successfully signed/updated user into Firebase")
+            
+            self.performSegue(withIdentifier: "loginSegue", sender: self)
+            
+        }
+    }
+
     fileprivate func setupFBLoginButtons() {
         
         // Creating the standard Facebook login button
@@ -137,42 +220,5 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
     
     
     
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        if error != nil {
-            print("Failed to log into Google", error); return
-        }
-        // user authenticated at Google
         
-        guard let idToken = user.authentication.idToken else { print("Couldn't get idToken from user"); return }
-        guard let accessToken = user.authentication.accessToken else { print("Couldn't get 'accessToken' from user"); return }
-        
-        let credentials = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
-        Auth.auth().signIn(with: credentials) { (firebaseUser, error) in
-            
-            if error != nil { print("Failed to sign into Firebase with Google"); return
-            }
-            // user authenticated at Firebase
-            
-            guard let currentUser = GIDSignIn.sharedInstance().currentUser.profile else {
-                print("Couldn't acccess current user"); return
-            }
-            
-            guard let user = firebaseUser else { print("Signed in user == nil"); return }
-            
-            let ref = Database.database().reference(fromURL: "https://barcodebookscanner.firebaseio.com/")
-            let userRef = ref.child("Users").child(user.uid)
-            let values = ["name": currentUser.name, "email": currentUser.email] as [AnyHashable: Any]
-            
-            userRef.updateChildValues(values, withCompletionBlock: { (error, ref) in
-                if error != nil {
-                    print("An error occurred updating users childValues", error!); return
-                }
-            })
-            print("Successfully signed/updated user into Firebase")
-            
-            self.performSegue(withIdentifier: "loginSegue", sender: self)
-            
-        }
-    }
-    
 }

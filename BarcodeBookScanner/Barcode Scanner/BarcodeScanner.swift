@@ -17,8 +17,7 @@ extension BarcodeScannerViewController {
     func setupCamera() {
         
         // Create a session object.
-        session = AVCaptureSession()
-        
+        session = AVCaptureSession()        
         
         // Set the captureDevice.
         let videoCaptureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
@@ -55,7 +54,7 @@ extension BarcodeScannerViewController {
             session.addOutput(metadataOutput)
             
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metadataOutput.metadataObjectTypes = [AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code]
+            metadataOutput.metadataObjectTypes = [AVMetadataObjectTypeEAN13Code ]
             session.commitConfiguration()
         } else {
             print("Couldn't add output")
@@ -80,10 +79,7 @@ extension BarcodeScannerViewController {
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             
             // Avoid a very buzzy device.
-            session.removeOutput(session.outputs.first as! AVCaptureOutput)
-            
-            
-            
+            session.removeOutput(session.outputs.first as! AVCaptureOutput)                                    
         }
     }
     
@@ -102,14 +98,13 @@ extension BarcodeScannerViewController {
             GoogleBooksClient.sharedInstance.getBookInformationFromBarcode(trimmedCode) { (succes, data, errorMessage) in
                 // Check for success
                 if succes == false {
-                    self.presentBarcodeErrorMessage(errorMessage: errorMessage)
-                    return
+                    self.presentBarcodeErrorMessage(errorMessage: errorMessage); return
                 }
                 
                 // Safely unwrap the data gotten from the API call
                 guard let items = data["items"] as? [[String : AnyObject]] else { print("Couldn't access 'items' in data");
                     self.errorOccuredErrorAlert(); return }
-                print(items)
+//                print(items)
                 
                 
                 var convenienceBook = GoogleBooksClient.sharedInstance.getConvenienceBookFromScannedBook(items: items)
@@ -128,9 +123,9 @@ extension BarcodeScannerViewController {
                 fetchRequest.predicate = predicate
                 let fetchResults = try! self.appDelegate.stack.context.fetch(fetchRequest) as? [Book]
                 
-                // Checls if the book has been scanned before
+                // Checks if the book has been scanned before
                 if fetchResults!.count == 0 {
-                    print("Book hadn't been scanned before, creating Book instance in CoreData")
+                    print("Book hadn't been scanned before, creating Book instance")
                     
                     
                     // Create Book managedObject and assign values accordingly
@@ -138,9 +133,9 @@ extension BarcodeScannerViewController {
                     bookFromBarcode.bookTitle = convenienceBook.title
                     bookFromBarcode.firebaseUID = firebaseUserUID
                     
-                    
                     bookFromBarcode.isbn13 = Int64(convenienceBook.isbn13)!//
-                    
+                    // Some books doesn't have a bookcover. We need to set a default image, so that when we create CV out of scanned books, it dosen't unwrap a nil value. Duhh 
+                    bookFromBarcode.bookCoverAsData = UIImagePNGRepresentation(UIImage(named: "defaultBookCoverImage")!) as NSData?
                     
                     do { try self.appDelegate.stack.saveContext()
                     } catch { print("An error occured trying to save core data, after creating book") }
@@ -168,11 +163,16 @@ extension BarcodeScannerViewController {
                             
                             do { try self.appDelegate.stack.saveContext() }
                             catch { print("ERROR: \(error)") }
-                            
-                            
                         }
                     }
                     
+                } else if fetchResults!.count > 0 {
+                    print("book has been scanned before")
+                    let fetchedResultsBook = fetchResults?.first
+                    let bookCover = fetchedResultsBook?.bookCoverAsData
+                    
+                    convenienceBook.largestThumbnail = UIImage(data: bookCover! as Data)
+                    convenienceBook.isThumbnailAvailable = true
                 }
                 
                 bookDetailVC.convenienceBook = convenienceBook
