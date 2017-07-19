@@ -37,7 +37,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
     }
     
     func signIntoFirebase() {
-        
+     
         let user = GIDSignIn.sharedInstance().currentUser
         
         guard let idToken = user?.authentication.idToken else { print("Couldn't get idToken from user"); return }
@@ -206,19 +206,19 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignIn
             if error != nil { print("Couldn't sign in with credentials", error!); return
             }
             
-            print("Succesfully signed in to Firebase with credentials", user?.uid)
+            print("Succesfully signed in to Firebase with credentials", user!.uid)
         }
         
-        //        FBSDKGraphRequest(graphPath: "/me", parameters: ["fields": "id, email, name"]).start { (connection, result, error) in
-        //            if error != nil { print("Failed to start graph request \(error!)"); return
-        //            }
-        //
-        //            print(result!)
-        //
-        //        }
+//        FBSDKGraphRequest(graphPath: "/me", parameters: ["fields": "id, email, name"]).start { (connection, result, error) in
+//            if error != nil { print("Failed to start graph request \(error!)"); return
+//            }
+//            
+//            print(result!)
+//            
+//        }
     }
     
     
     
-        
+    
 }

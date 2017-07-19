@@ -29,8 +29,9 @@ import CoreData
 class BookShelfCV: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate {    
     
     // Når appen åbner skal vi kigge i Firebase for at se om brugeren har scannet bøger.    
-    // Der går for lang tid fra man trykker på scanned books til at man kommer ind på 'DetailVC'
-    // bøger forsvinder når man scroller væk fra dem
+    // Alt data fra når man scanner skal laves sættes in i core data
+    // Dropdown bliver ikke available hvis der ikke er nogle bøger
+    // Kameraet åbner ikke - når man åbner appen for første gang, fordi den prøver at adde input, men ikke har fået lov endu
     
     // FIXED
     // Nogle gange når man scanner kommer billedet ikke med
@@ -43,9 +44,10 @@ class BookShelfCV: UIViewController, UICollectionViewDelegate, UICollectionViewD
     // Få brugerens reoler og add dem til tiles?
     // sletter ikke alle de rigtige celler i 'detailVC'
     // Fikse 'fatal error: Index out of range' hvis man skifter bookshelf inden alle billeder er downloadet
-    // Kameraet åbner ikke - når man åbner appen for første gang, fordi den prøver at adde input, men ikke har fået lov endnu
+    
     // Når man sletter / adder bogen til alle reoler får man fejlen 'fatal error: Index out of range' - hvis man ikke gør det en efter en
     // Slette det tomme plads når alle 'AddTo' celler er væk
+    // bøger forsvinder når man scroller væk fra dem
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
@@ -91,12 +93,19 @@ class BookShelfCV: UIViewController, UICollectionViewDelegate, UICollectionViewD
         
         // Load the bookshelfs
         loadBookshelfs()
-        
         do { try fetchedResultsController.performFetch()
         } catch { print("Failed to initialize FetchedResultsController: \(error)") }
         
         
         downloadedBookInCV.append(contentsOf: fetchedResultsController.fetchedObjects!)
+    }
+    
+    
+    func matchFirebaseAndCoreData() {
+    
+       
+    
+    
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -174,7 +183,6 @@ class BookShelfCV: UIViewController, UICollectionViewDelegate, UICollectionViewD
             
             self.isInitailSetupDone = true
             DispatchQueue.main.async { self.collectionView.reloadData() }
-            
             for (index, convenienceBook) in self.booksInCV.enumerated() {
                 self.initiateImageDownload(convenienceBook: convenienceBook, index: index)
             }

@@ -16,7 +16,7 @@ struct GoogleBooksClient {
 
     func getBookInformationFromBarcode( _ barcode: Int, CHForBookInformation: @escaping (_ succes: Bool, _ data: [String : AnyObject], _ errorMessage: String) -> Void) {
         DispatchQueue.main.async {
-            
+            print("getBookInformationFromBarcode called")
 //            
 //            let lort = [
 //                GoogleBooksClient.GoogleBooksSearchParameterKeys.isbn : barcode

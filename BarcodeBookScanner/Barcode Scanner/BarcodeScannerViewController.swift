@@ -22,23 +22,34 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        print("BarcodeScannerViewController did load")
+//        print("BarcodeScannerViewController did load")
         
         // Sets up the camera, and barcode scanner
         setupCamera()
         
-        
-        if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) == AVAuthorizationStatus.authorized {
+        if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) == .authorized {
             // Already Authorized
+            print("Camera is already authorized")
         } else {
             AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted: Bool) -> Void in
                 // User granted access.
+                print("Granted access")
                 if granted {
+                    print("Granted access == true ")
+//                    self.checkAndAddInput()
+//                    if !(self.session.isRunning) {
+//                        self.checkAndAddOutput()
+//                        self.session.startRunning()
+//                    }
+                    self.checkAndAddInput()
+                    self.checkAndAddOutput()
+                    
                     if !(self.session.isRunning) {
+//                        self.checkAndAddOutput()
                         self.session.startRunning()
-                        
-                        self.checkAndAddOutput()
                     }
+                    
+//                    self.setupCamera()
                 }
             })
         }
@@ -51,11 +62,11 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         super.viewWillAppear(true)
         DispatchQueue.main.async {
             // If session is not running
-            
+            self.checkAndAddOutput()
             if !(self.session.isRunning) {
                 self.session.startRunning()
                 
-                self.checkAndAddOutput()
+                
             }
         }
     }
@@ -76,7 +87,7 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         
         let values = convenienceBook.getAllNonEmptyValues()
         
-        guard let isbn13 = values["isbn13"] else { print("'isbn13' couldn't safely convert to type 'String'");
+        guard let isbn13 = values["isbn13"] else { print("'isbn13' couldn't safely convert to type 'String'")
             errorOccuredErrorAlert(); return
         }
         let scannedBookRef = usersBooksRef.child(isbn13)

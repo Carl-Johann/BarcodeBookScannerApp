@@ -64,7 +64,7 @@ extension BookShelfCV {
         
         let sortButton = UIBarButtonItem(image: UIImage(named: "FilterIcon"), style: .plain, target: self, action: #selector(showDropdown))
         
-        navItem.rightBarButtonItem = sortButton
+        navItem.rightBarButtonItem = sortButton        
         navItem.leftBarButtonItem = editButtonItem
         
         
@@ -156,11 +156,28 @@ extension BookShelfCV {
             var convenienceBook = ConvenienceBook()
             
             convenienceBook.smallestThumbnail = UIImage(data: fetchedObject.bookCoverAsData! as Data)
-            convenienceBook.title = fetchedObject.bookTitle!
             convenienceBook.largestThumbnail = UIImage(data: fetchedObject.bookCoverAsData! as Data)
+            convenienceBook.title = fetchedObject.bookTitle!
             convenienceBook.isbn13 = String(fetchedObject.isbn13)
+            convenienceBook.isbn10 = fetchedObject.isbn10!
             convenienceBook.isThumbnailAvailable = true
             
+            convenienceBook.authors = fetchedObject.authors!
+            convenienceBook.bookID = fetchedObject.bookID!
+            convenienceBook.categories = fetchedObject.categories!
+            convenienceBook.description = fetchedObject.bookDescription!
+            convenienceBook.extraLargeThumbnail = fetchedObject.extraLargeThumbnail!
+            convenienceBook.largeThumbnail = fetchedObject.largeThumbnail!
+            convenienceBook.mainCategory = fetchedObject.mainCategory!
+            convenienceBook.mediumThumbnail = fetchedObject.mediumThumbnail!
+            convenienceBook.numberOfPages = fetchedObject.numberOfPages!
+            convenienceBook.publishedDate = fetchedObject.publishedDate!
+            convenienceBook.publisher = fetchedObject.publisher!
+            convenienceBook.rating = fetchedObject.rating!
+            convenienceBook.smallThumbnail = fetchedObject.smallThumbnail!
+            convenienceBook.thumbnail = fetchedObject.thumbnail!
+            convenienceBook.thumbnailIsSmall = fetchedObject.thumbnail!
+                                    
             booksInCV.append(convenienceBook)
         }
     }

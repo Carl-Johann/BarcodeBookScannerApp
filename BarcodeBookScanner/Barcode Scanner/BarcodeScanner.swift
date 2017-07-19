@@ -18,6 +18,36 @@ extension BarcodeScannerViewController {
         
         // Create a session object.
         session = AVCaptureSession()        
+//        
+//        // Set the captureDevice.
+//        let videoCaptureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+//        
+//        // Create input object.
+//        let videoInput: AVCaptureDeviceInput?
+//        do { videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
+//        } catch { print("ERROR: \(error)"); return }
+//        
+//        // Add input to the session.
+//        if session.canAddInput(videoInput!) {
+//            session.addInput(videoInput!)
+//        } else {
+//            scanningNotPossible()
+//        }
+        checkAndAddInput()
+        checkAndAddOutput()
+        
+        // Add previewLayer and have it show the video data.
+        previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        previewLayer.frame = view.layer.bounds
+        view.layer.addSublayer(previewLayer)
+        
+        // Begin the capture session.
+        DispatchQueue.main.async { self.session.startRunning() }
+        
+        
+    }
+    
+    func checkAndAddInput() {
         
         // Set the captureDevice.
         let videoCaptureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
@@ -33,39 +63,45 @@ extension BarcodeScannerViewController {
         } else {
             scanningNotPossible()
         }
-        
-        checkAndAddOutput()
-        
-        // Add previewLayer and have it show the video data.
-        previewLayer = AVCaptureVideoPreviewLayer(session: session)
-        previewLayer.frame = view.layer.bounds
-        view.layer.addSublayer(previewLayer)
-        
-        // Begin the capture session.
-        DispatchQueue.main.async { self.session.startRunning() }
-        
-        
+
+    
     }
     
     func checkAndAddOutput() {
         let metadataOutput = AVCaptureMetadataOutput()
-        
-        if session.canAddOutput(metadataOutput) {
-            session.addOutput(metadataOutput)
+        DispatchQueue.global(qos: .background).async {
+            print("This is run on the background queue")
             
-            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metadataOutput.metadataObjectTypes = [AVMetadataObjectTypeEAN13Code ]
-            session.commitConfiguration()
-        } else {
-            print("Couldn't add output")
+            DispatchQueue.main.async {
+                print("This is run on the main queue, after the previous code in outer block")
+                if self.session.canAddOutput(metadataOutput) {
+                    self.session.addOutput(metadataOutput)
+                    
+                    metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+                    metadataOutput.metadataObjectTypes = [AVMetadataObjectTypeEAN13Code ]
+                    self.session.commitConfiguration()
+                } else {
+                    print("Couldn't add output")
+                }
+
+            }
         }
+//        if session.canAddOutput(metadataOutput) {
+//            session.addOutput(metadataOutput)
+//            
+//            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+//            metadataOutput.metadataObjectTypes = [AVMetadataObjectTypeEAN13Code ]
+//            session.commitConfiguration()
+//        } else {
+//            print("Couldn't add output")
+//        }
         
         
     }
     
     
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
-        
+        print("Detected a barcode")
         // Get the first object from the metadataObjects array.
         if let barcodeData = metadataObjects.first {
             // Turn it into machine readable code
@@ -92,7 +128,7 @@ extension BarcodeScannerViewController {
         guard let trimmedCode = Int(code.trimmingCharacters(in: NSCharacterSet.whitespaces)) else {
             print("Trimming of scanned code failed"); return
         }
-        
+        print("Scanned book")
         // making an API call with the retrived code
         DispatchQueue.main.async {
             GoogleBooksClient.sharedInstance.getBookInformationFromBarcode(trimmedCode) { (succes, data, errorMessage) in
@@ -106,15 +142,17 @@ extension BarcodeScannerViewController {
                     self.errorOccuredErrorAlert(); return }
 //                print(items)
                 
-                
+                print("lort")
                 var convenienceBook = GoogleBooksClient.sharedInstance.getConvenienceBookFromScannedBook(items: items)
+                print("fuck")
                 self.updateChildValues(convenienceBook: convenienceBook)
+                print("1")
                 guard let firebaseUserUID = Auth.auth().currentUser?.uid else { print("Current Firebase user UID == nil"); return }
-                
+                print(2)
                 
                 
                 let bookDetailVC = BookDetailViewController()
-                
+                print(3)
                 
                 
                 // Check if a Book managedObject already exsits
@@ -132,16 +170,29 @@ extension BarcodeScannerViewController {
                     let bookFromBarcode = Book(context: self.appDelegate.stack.context)
                     bookFromBarcode.bookTitle = convenienceBook.title
                     bookFromBarcode.firebaseUID = firebaseUserUID
-                    
-                    bookFromBarcode.isbn13 = Int64(convenienceBook.isbn13)!//
-                    // Some books doesn't have a bookcover. We need to set a default image, so that when we create CV out of scanned books, it dosen't unwrap a nil value. Duhh 
+                    bookFromBarcode.authors = convenienceBook.authors
+                    bookFromBarcode.bookDescription = convenienceBook.description
+                    bookFromBarcode.bookID = convenienceBook.bookID
+                    bookFromBarcode.categories = convenienceBook.categories
+                    bookFromBarcode.extraLargeThumbnail = convenienceBook.extraLargeThumbnail
+                    bookFromBarcode.isbn10 = convenienceBook.isbn10
+                    bookFromBarcode.isbn13 = Int64(convenienceBook.isbn13)!
+                    bookFromBarcode.largeThumbnail = convenienceBook.largeThumbnail
+                    bookFromBarcode.mainCategory = convenienceBook.mainCategory
+                    bookFromBarcode.mediumThumbnail = convenienceBook.mediumThumbnail
+                    bookFromBarcode.numberOfPages = convenienceBook.numberOfPages
+                    bookFromBarcode.publishedDate = convenienceBook.publishedDate
+                    bookFromBarcode.publisher = convenienceBook.publisher
+                    bookFromBarcode.rating = convenienceBook.rating
+                    bookFromBarcode.smallThumbnail = convenienceBook.smallThumbnail
+                    bookFromBarcode.thumbnail = convenienceBook.thumbnail
+                    bookFromBarcode.thumbnailIsSmall = convenienceBook.thumbnailIsSmall
+
+                    // Some books doesn't have a bookcover. We need to set a default image, so that when we create CV out of scanned books, it dosen't unwrap a nil value. Duhh
                     bookFromBarcode.bookCoverAsData = UIImagePNGRepresentation(UIImage(named: "defaultBookCoverImage")!) as NSData?
                     
                     do { try self.appDelegate.stack.saveContext()
                     } catch { print("An error occured trying to save core data, after creating book") }
-                    
-                    
-                    
                     
                     
                     let thumbnailToDownload = convenienceBook.getBiggestThumbnail()

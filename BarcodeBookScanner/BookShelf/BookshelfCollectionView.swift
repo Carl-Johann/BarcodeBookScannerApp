@@ -40,10 +40,12 @@ extension BookShelfCV {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if booksInCV.count == 0 && isInitailSetupDone {
             emptyBookshelfTextView.alpha = 1
+//            DispatchQueue.main.async { self.navItem.rightBarButtonItem?.isEnabled = true }
             emptyBookshelfScannerImage.alpha = 1
             return booksInCV.count
         }
         emptyBookshelfTextView.alpha = 0
+//        DispatchQueue.main.async { self.navItem.rightBarButtonItem?.isEnabled = false }
         emptyBookshelfScannerImage.alpha = 0
         return booksInCV.count
     }
@@ -71,58 +73,95 @@ extension BookShelfCV {
         
         
         
-        
+            
         case false:
             DispatchQueue.main.async {
                 let selectedCell = collectionView.cellForItem(at: indexPath) as! BookCell
                 let selectedCellConvenienceBook = selectedCell.associatedConvenienceBook
                 
                 let bookDetailVC = BookDetailViewController()
+                let bookDetailVCNavigationController: UINavigationController = UINavigationController(rootViewController: bookDetailVC)
                 
-                if self.navItem.title == "Scanned books" {
-                    DispatchQueue.main.async {
-                        GoogleBooksClient.sharedInstance.getBookInformationFromBarcode(Int(selectedCellConvenienceBook!.isbn13)!) { (succes, data, errorMessage) in
-                            // Check for success
-                            if succes == false {
-                                self.presentBarcodeErrorMessage(errorMessage: errorMessage); return
-                            }
-                            // Core Data object
-                            
-                            guard let items = data["items"] as? [[String : AnyObject]] else { print("Couldn't access 'items' in data");
-                            self.presentBarcodeErrorMessage(errorMessage: "Internal error. Try agian later"); return }
-                        
-                            var convenienceBook = GoogleBooksClient.sharedInstance.getConvenienceBookFromScannedBook(items: items)
-                            
-                            convenienceBook.title = (selectedCellConvenienceBook?.title)!
-                            convenienceBook.smallestThumbnail = selectedCellConvenienceBook?.smallestThumbnail
-                            convenienceBook.largestThumbnail = selectedCellConvenienceBook?.largestThumbnail
-                            convenienceBook.isbn13 = (selectedCellConvenienceBook?.isbn13)!
-                            convenienceBook.isThumbnailAvailable = true
-                            
-                            bookDetailVC.convenienceBook = convenienceBook
-                            
-                            var titlesToTransfer = self.titles
-                            titlesToTransfer.removeLast()
-                            bookDetailVC.titles = titlesToTransfer
-                            
-                            let bookDetailVCNavigationController: UINavigationController = UINavigationController(rootViewController: bookDetailVC)
-                            self.present(bookDetailVCNavigationController, animated: true, completion: nil)
-                        }
-                    }
-                    
-                } else if self.navItem.title != "Scanned books" {
-                    bookDetailVC.convenienceBook = selectedCellConvenienceBook
-                    
-                    var titlesToTransfer = self.titles
-                    titlesToTransfer.removeLast()
-                    bookDetailVC.titles = titlesToTransfer
-                    let bookDetailVCNavigationController: UINavigationController = UINavigationController(rootViewController: bookDetailVC)
-                    self.present(bookDetailVCNavigationController, animated: true, completion: nil)
-                    
-                }
+                
+                bookDetailVC.convenienceBook = selectedCellConvenienceBook
+                
+                var titlesToTransfer = self.titles
+                titlesToTransfer.removeLast()
+                bookDetailVC.titles = titlesToTransfer
+                
+                
+                self.present(bookDetailVCNavigationController, animated: true, completion: nil)
+
+                
+                
+//                if self.navItem.title == "Scanned books" {
+//                    DispatchQueue.main.async {
+////                        GoogleBooksClient.sharedInstance.getBookInformationFromBarcode(Int(selectedCellConvenienceBook!.isbn13)!) { (succes, data, errorMessage) in
+////                            // Check for success
+////                            if succes == false {
+////                                self.presentBarcodeErrorMessage(errorMessage: errorMessage); return
+////                            }
+////                            // Core Data object
+////
+////                            guard let items = data["items"] as? [[String : AnyObject]] else { print("Couldn't access 'items' in data");
+////                            self.presentBarcodeErrorMessage(errorMessage: "Internal error. Try agian later"); return }
+////
+////                            var convenienceBook = GoogleBooksClient.sharedInstance.getConvenienceBookFromScannedBook(items: items)
+//                        
+////                        for value in selectedCellConvenienceBook. {
+////                        
+////                        
+////                        }
+//                        var convenienceBook = ConvenienceBook()
+//                        convenienceBook.title = (selectedCellConvenienceBook?.title)!
+//                        convenienceBook.smallestThumbnail = selectedCellConvenienceBook?.smallestThumbnail
+//                        convenienceBook.largestThumbnail = selectedCellConvenienceBook?.largestThumbnail
+////                        convenienceBook.isbn13 = (selectedCellConvenienceBook?.isbn13)!
+////                        convenienceBook.isThumbnailAvailable = true
+////                        convenienceBook.authors = selectedCellConvenienceBook?.authors
+////                        convenienceBook.bookID = selectedCellConvenienceBook?.bookID
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+////                        convenienceBook.
+//                        
+//                        
+//                        
+//                        
+//                        
+//                        bookDetailVC.convenienceBook = convenienceBook
+//                        
+//                        var titlesToTransfer = self.titles
+//                        titlesToTransfer.removeLast()
+//                        bookDetailVC.titles = titlesToTransfer
+//                        
+////                        let bookDetailVCNavigationController: UINavigationController = UINavigationController(rootViewController: bookDetailVC)
+//                        self.present(bookDetailVCNavigationController, animated: true, completion: nil)
+//                        //                        }
+//                    }
+//                    
+//                } else if self.navItem.title != "Scanned books" {
+//                    bookDetailVC.convenienceBook = selectedCellConvenienceBook
+//                    
+//                    var titlesToTransfer = self.titles
+//                    titlesToTransfer.removeLast()
+//                    bookDetailVC.titles = titlesToTransfer
+//                    
+//                    
+//                    self.present(bookDetailVCNavigationController, animated: true, completion: nil)
+//                    
+//                }
             }
         }
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BookCell", for: indexPath) as! BookCell

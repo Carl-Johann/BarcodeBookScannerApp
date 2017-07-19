@@ -41,7 +41,7 @@ struct ConvenienceBook {
     
     
     func getAllNonEmptyValues() -> [String : String] {
-        let values: [String : String] = [
+        var values: [String : String] = [
             "title": self.title,
             "isbn13": self.isbn13,
             "isbn10": self.isbn10,
@@ -60,12 +60,14 @@ struct ConvenienceBook {
         
         var nonEmptyKeyValuePairs: [String : String] = [String : String]()
         
+        let (authorKeyString, authorValueString) = cleanAndCreateString(pluralKey: "Authors", singularKeyForm: "Author", stringToIterate: self.authors)
+        values.updateValue(authorValueString, forKey: authorKeyString)
+        
         for keyValuePair in values {
             if !(keyValuePair.value.isEmpty) { nonEmptyKeyValuePairs.updateValue(keyValuePair.value, forKey: keyValuePair.key) }
         }
         
-        let (authorKeyString, authorValueString) = cleanAndCreateString(pluralKey: "Authors", singularKeyForm: "Author", stringToIterate: self.authors)        
-        nonEmptyKeyValuePairs.updateValue(authorValueString, forKey: authorKeyString)
+        
         
         return nonEmptyKeyValuePairs
     }
